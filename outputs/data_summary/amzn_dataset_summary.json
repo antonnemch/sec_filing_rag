@@ -1,0 +1,61 @@
+{
+  "ticker": "AMZN",
+  "generated_at_utc": "2026-06-30T03:36:02.167399+00:00",
+  "filings_downloaded": 7,
+  "filing_type_counts": {
+    "10-K": 1,
+    "10-Q": 1,
+    "8-K": 5
+  },
+  "filings": [
+    {
+      "filing_type": "10-K",
+      "filing_date": "2026-02-06",
+      "accession_number": "0001018724-26-000004"
+    },
+    {
+      "filing_type": "10-Q",
+      "filing_date": "2026-04-30",
+      "accession_number": "0001018724-26-000014"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-06-12",
+      "accession_number": "0001104659-26-073562"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-06-10",
+      "accession_number": "0001104659-26-072140"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-05-22",
+      "accession_number": "0001104659-26-065717"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-04-29",
+      "accession_number": "0001018724-26-000012"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-04-14",
+      "accession_number": "0001104659-26-042880"
+    }
+  ],
+  "cleaned_files": 7,
+  "total_chunks": 256,
+  "average_words_per_chunk": 347.96,
+  "chunk_size": 400,
+  "chunk_overlap": 75,
+  "output_paths": {
+    "raw_manifest": "data/raw/amzn/filing_metadata.json",
+    "cleaning_manifest": "data/processed/amzn/cleaning_manifest.json",
+    "chunks_csv": "data/processed/amzn/amzn_filing_chunks.csv",
+    "chunks_jsonl": "data/processed/amzn/amzn_filing_chunks.jsonl",
+    "filing_inventory": "outputs/data_summary/amzn_filing_inventory.csv",
+    "cleaning_summary": "outputs/data_summary/amzn_cleaning_summary.csv",
+    "dataset_summary": "outputs/data_summary/amzn_dataset_summary.json"
+  }
+}

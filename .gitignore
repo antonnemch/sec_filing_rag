@@ -206,6 +206,11 @@ tempCodeRunnerFile.py
 # Ruff stuff:
 .ruff_cache/
 
+# Generated SEC filing documents and retrieval-ready chunks
+/data/raw/
+/data/processed/
+/.test-data-*/
+
 # PyPI configuration file
 .pypirc
 
