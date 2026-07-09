@@ -1,0 +1,70 @@
+{
+  "ticker": "GOOG",
+  "generated_at_utc": "2026-07-09T04:09:17.408283+00:00",
+  "filings_downloaded": 7,
+  "filing_type_counts": {
+    "10-K": 1,
+    "10-Q": 1,
+    "8-K": 5
+  },
+  "filings": [
+    {
+      "filing_type": "10-K",
+      "filing_date": "2026-02-05",
+      "accession_number": "0001652044-26-000018",
+      "human_readable_path": "data/human_readable/goog/2026-02-05_10-K_000165204426000018.md"
+    },
+    {
+      "filing_type": "10-Q",
+      "filing_date": "2026-04-30",
+      "accession_number": "0001652044-26-000048",
+      "human_readable_path": "data/human_readable/goog/2026-04-30_10-Q_000165204426000048.md"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-06-11",
+      "accession_number": "0001193125-26-267578",
+      "human_readable_path": "data/human_readable/goog/2026-06-11_8-K_000119312526267578.md"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-06-05",
+      "accession_number": "0001193125-26-259830",
+      "human_readable_path": "data/human_readable/goog/2026-06-05_8-K_000119312526259830.md"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-06-05",
+      "accession_number": "0001652044-26-000059",
+      "human_readable_path": "data/human_readable/goog/2026-06-05_8-K_000165204426000059.md"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-06-04",
+      "accession_number": "0001193125-26-257724",
+      "human_readable_path": "data/human_readable/goog/2026-06-04_8-K_000119312526257724.md"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-05-21",
+      "accession_number": "0001193125-26-234488",
+      "human_readable_path": "data/human_readable/goog/2026-05-21_8-K_000119312526234488.md"
+    }
+  ],
+  "cleaned_files": 7,
+  "human_readable_files": 7,
+  "total_chunks": 284,
+  "average_words_per_chunk": 359.85,
+  "chunk_size": 400,
+  "chunk_overlap": 75,
+  "output_paths": {
+    "raw_manifest": "data/raw/goog/filing_metadata.json",
+    "human_readable_dir": "data/human_readable/goog",
+    "cleaning_manifest": "data/processed/goog/cleaning_manifest.json",
+    "chunks_csv": "data/processed/goog/goog_filing_chunks.csv",
+    "chunks_jsonl": "data/processed/goog/goog_filing_chunks.jsonl",
+    "filing_inventory": "outputs/data_summary/goog_filing_inventory.csv",
+    "cleaning_summary": "outputs/data_summary/goog_cleaning_summary.csv",
+    "dataset_summary": "outputs/data_summary/goog_dataset_summary.json"
+  }
+}

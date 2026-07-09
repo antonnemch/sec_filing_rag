@@ -5,12 +5,14 @@ from __future__ import annotations
 import json
 import os
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import MISSING, asdict, dataclass, fields
 from pathlib import Path
 from typing import Any, Iterable
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_TICKERS = ("META", "AMZN", "AAPL", "NFLX", "GOOG")
+DEFAULT_MULTI_COMPANY_SLUG = "faang"
 _TICKER_PATTERN = re.compile(r"^[A-Z0-9.-]+$")
 _EMAIL_PATTERN = re.compile(r"\b[^@\s]+@[^@\s]+\.[^@\s]+\b")
 
@@ -28,6 +30,9 @@ class FilingRecord:
     source_url: str
     local_raw_path: str
     raw_format: str
+    local_markdown_path: str = ""
+    human_readable_format: str = ""
+    human_readable_warning: str = ""
 
     def to_dict(self) -> dict[str, str]:
         """Return a JSON-serializable representation."""
@@ -38,13 +43,22 @@ class FilingRecord:
     def from_dict(cls, value: dict[str, Any]) -> "FilingRecord":
         """Create a record from a raw manifest entry."""
 
-        required = {field.name for field in cls.__dataclass_fields__.values()}
-        missing = sorted(required.difference(value))
+        record_values: dict[str, str] = {}
+        missing: list[str] = []
+        for field in fields(cls):
+            if field.name in value:
+                record_values[field.name] = str(value[field.name])
+            elif field.default is not MISSING:
+                record_values[field.name] = str(field.default)
+            elif field.default_factory is not MISSING:  # type: ignore[attr-defined]
+                record_values[field.name] = str(field.default_factory())  # type: ignore[misc]
+            else:
+                missing.append(field.name)
         if missing:
             raise ValueError(
                 "Filing metadata is missing required field(s): " + ", ".join(missing)
             )
-        return cls(**{key: str(value[key]) for key in required})
+        return cls(**record_values)
 
 
 def normalize_ticker(ticker: str) -> str:
@@ -62,6 +76,36 @@ def ticker_slug(ticker: str) -> str:
     """Return the normalized lowercase directory name for a ticker."""
 
     return normalize_ticker(ticker).lower()
+
+
+def normalize_tickers(tickers: Iterable[str]) -> tuple[str, ...]:
+    """Normalize and validate a non-empty ticker list."""
+
+    normalized = tuple(normalize_ticker(ticker) for ticker in tickers)
+    if not normalized:
+        raise ValueError("At least one ticker must be provided.")
+
+    seen: set[str] = set()
+    duplicates: list[str] = []
+    for ticker in normalized:
+        if ticker in seen and ticker not in duplicates:
+            duplicates.append(ticker)
+        seen.add(ticker)
+    if duplicates:
+        raise ValueError("Duplicate ticker(s) are not allowed: " + ", ".join(duplicates))
+
+    return normalized
+
+
+def dataset_slug_for_tickers(tickers: Iterable[str]) -> str:
+    """Return a stable output prefix for one ticker or a ticker collection."""
+
+    normalized = normalize_tickers(tickers)
+    if normalized == DEFAULT_TICKERS:
+        return DEFAULT_MULTI_COMPANY_SLUG
+    if len(normalized) == 1:
+        return ticker_slug(normalized[0])
+    return "_".join(ticker_slug(ticker) for ticker in normalized)
 
 
 def validate_num_8k(num_8k: int) -> None:
@@ -171,6 +215,21 @@ def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def read_jsonl(path: Path) -> list[dict[str, Any]]:
+    """Read dictionaries from UTF-8 JSON Lines."""
+
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Required JSONL file does not exist: {path}. Run the preceding "
+            "pipeline stage first."
+        )
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            rows.append(json.loads(line))
+    return rows
 
 
 def format_cik(value: Any) -> str:
