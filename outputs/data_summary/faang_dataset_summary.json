@@ -1,0 +1,42 @@
+{
+  "dataset": "faang",
+  "tickers": [
+    "META",
+    "AMZN",
+    "AAPL",
+    "NFLX",
+    "GOOG"
+  ],
+  "generated_at_utc": "2026-07-09T04:15:15.384221+00:00",
+  "filings_downloaded": 35,
+  "filing_type_counts": {
+    "10-K": 5,
+    "10-Q": 5,
+    "8-K": 25
+  },
+  "cleaned_files": 35,
+  "human_readable_files": 35,
+  "total_chunks": 1386,
+  "average_words_per_chunk": 359.11,
+  "word_count_stats": {
+    "min": 1,
+    "p25": 400.0,
+    "median": 400.0,
+    "mean": 359.11,
+    "p75": 400.0,
+    "max": 400
+  },
+  "section_heading_coverage_pct": 92.14,
+  "output_paths": {
+    "combined_chunks_csv": "data/processed/faang/faang_filing_chunks.csv",
+    "combined_chunks_jsonl": "data/processed/faang/faang_filing_chunks.jsonl",
+    "filing_inventory": "outputs/data_summary/faang_filing_inventory.csv",
+    "cleaning_summary": "outputs/data_summary/faang_cleaning_summary.csv",
+    "chunk_summary": "outputs/data_summary/faang_chunk_summary_by_ticker_form.csv",
+    "missingness_summary": "outputs/data_summary/faang_missingness_summary.csv",
+    "outlier_summary": "outputs/data_summary/faang_outlier_summary.csv",
+    "section_summary": "outputs/data_summary/faang_section_summary.csv",
+    "data_description": "outputs/data_summary/faang_data_description.md",
+    "dataset_summary": "outputs/data_summary/faang_dataset_summary.json"
+  }
+}

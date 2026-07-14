@@ -209,6 +209,7 @@ tempCodeRunnerFile.py
 # Generated SEC filing documents and retrieval-ready chunks
 /data/raw/
 /data/processed/
+/data/human_readable/
 /.test-data-*/
 
 # PyPI configuration file

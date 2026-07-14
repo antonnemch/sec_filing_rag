@@ -1,0 +1,8 @@
+ticker,filing_type,filing_date,accession_number,raw_length,cleaned_length,retained_ratio,warnings
+AAPL,10-K,2025-10-31,0000320193-25-000079,1520208,208131,0.1369,large_length_reduction; html_tables_flattened_to_text
+AAPL,10-Q,2026-05-01,0000320193-26-000013,999810,85444,0.0855,large_length_reduction; html_tables_flattened_to_text
+AAPL,8-K,2026-04-30,0000320193-26-000011,37639,3533,0.0939,large_length_reduction; html_tables_flattened_to_text
+AAPL,8-K,2026-04-20,0001140361-26-015711,38605,4422,0.1145,large_length_reduction; html_tables_flattened_to_text; no_section_headings_detected
+AAPL,8-K,2026-02-24,0001140361-26-006577,73012,5108,0.07,large_length_reduction; html_tables_flattened_to_text; no_section_headings_detected
+AAPL,8-K,2026-01-29,0000320193-26-000005,38421,3546,0.0923,large_length_reduction; html_tables_flattened_to_text
+AAPL,8-K,2026-01-02,0001140361-26-000199,39520,3652,0.0924,large_length_reduction; html_tables_flattened_to_text; no_section_headings_detected

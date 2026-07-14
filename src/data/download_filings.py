@@ -59,10 +59,43 @@ def _extract_filing_content(filing: Any) -> tuple[str, str]:
     raise RuntimeError(f"No usable filing content was returned for {accession}.")
 
 
+def _extract_human_readable_content(
+    filing: Any,
+    raw_content: str,
+    raw_format: str,
+) -> tuple[str, str, str, str]:
+    """Return human-readable content, preferring EdgarTools Markdown."""
+
+    warnings: list[str] = []
+    try:
+        markdown = filing.markdown(include_page_breaks=True, start_page_number=1)
+        if markdown and markdown.strip():
+            return markdown.strip() + "\n", "markdown", ".md", ""
+        warnings.append("markdown_empty")
+    except Exception as exc:  # pragma: no cover - exercised via synthetic test
+        warnings.append(f"markdown_failed:{type(exc).__name__}")
+
+    try:
+        text = filing.text()
+        if text and text.strip():
+            return text.strip() + "\n", "text", ".txt", "; ".join(warnings)
+        warnings.append("text_empty")
+    except Exception as exc:  # pragma: no cover - defensive fallback
+        warnings.append(f"text_failed:{type(exc).__name__}")
+
+    fallback = (
+        raw_content.strip()
+        if raw_format == "text" and raw_content.strip()
+        else "Human-readable conversion failed. See the raw filing file."
+    )
+    return fallback + "\n", "text", ".txt", "; ".join(warnings)
+
+
 def _download_one(
     filing: Any,
     ticker: str,
     raw_directory: Path,
+    human_readable_directory: Path,
     project_root: Path,
 ) -> FilingRecord:
     """Persist one filing and return its normalized metadata."""
@@ -88,6 +121,12 @@ def _download_one(
     raw_path = raw_directory / f"{filename}{suffix}"
     raw_path.write_text(content, encoding="utf-8")
 
+    human_content, human_format, human_suffix, human_warning = (
+        _extract_human_readable_content(filing, content, raw_format)
+    )
+    human_path = human_readable_directory / f"{filename}{human_suffix}"
+    human_path.write_text(human_content, encoding="utf-8")
+
     source_url = str(
         getattr(filing, "filing_url", None)
         or getattr(filing, "homepage_url", None)
@@ -103,6 +142,9 @@ def _download_one(
         source_url=source_url,
         local_raw_path=project_relative(raw_path, project_root),
         raw_format=raw_format,
+        local_markdown_path=project_relative(human_path, project_root),
+        human_readable_format=human_format,
+        human_readable_warning=human_warning,
     )
 
 
@@ -124,6 +166,9 @@ def _write_inventory(
         "source_url",
         "local_raw_path",
         "raw_format",
+        "local_markdown_path",
+        "human_readable_format",
+        "human_readable_warning",
     ]
     pd.DataFrame([record.to_dict() for record in records], columns=columns).to_csv(
         inventory_path, index=False
@@ -180,13 +225,21 @@ def download_filings(
         project_root / "data" / "raw" / ticker_slug(normalized_ticker)
     )
     raw_directory.mkdir(parents=True, exist_ok=True)
+    human_readable_directory = (
+        project_root / "data" / "human_readable" / ticker_slug(normalized_ticker)
+    )
+    human_readable_directory.mkdir(parents=True, exist_ok=True)
 
     records: list[FilingRecord] = []
     for filing in selected:
         try:
             records.append(
                 _download_one(
-                    filing, normalized_ticker, raw_directory, project_root
+                    filing,
+                    normalized_ticker,
+                    raw_directory,
+                    human_readable_directory,
+                    project_root,
                 )
             )
         except Exception as exc:

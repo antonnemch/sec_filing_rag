@@ -7,9 +7,9 @@ financial question-answering system. The current milestone covers data
 collection, conservative text cleaning, and word-based chunking only. It does
 not implement keyword search, embeddings, a vector database, LLM calls, or RAG.
 
-Amazon.com, Inc. (`AMZN`) is the default company because it is a well-known
-public filer with substantial annual, quarterly, and current-report
-disclosures. The scripts are reusable for another ticker through `--ticker`.
+The default dataset covers five large technology/media companies: `META`,
+`AMZN`, `AAPL`, `NFLX`, and `GOOG`. The scripts can still run for one company
+through `--ticker` or for a custom list through `--tickers`.
 
 The pipeline collects:
 
@@ -48,10 +48,28 @@ be committed. The library's default rate limit remains in effect.
 
 ## Build the Dataset
 
-Run the complete default Amazon pipeline:
+Run the complete default FAANG pipeline:
+
+```powershell
+python -m src.data.build_dataset
+```
+
+The included PowerShell wrapper runs the same default dataset:
+
+```powershell
+.\scripts\build_faang_dataset.ps1
+```
+
+Run one company only:
 
 ```powershell
 python -m src.data.build_dataset --ticker AMZN --num-8k 5 --chunk-size 400 --chunk-overlap 75
+```
+
+Run an explicit custom list:
+
+```powershell
+python -m src.data.build_dataset --tickers META AMZN AAPL NFLX GOOG
 ```
 
 Each stage can also run independently:
@@ -74,7 +92,7 @@ Argument rules:
 
 ## Generated Files
 
-For `AMZN`, a successful run creates:
+For each ticker, a successful run creates:
 
 ```text
 data/
@@ -82,6 +100,8 @@ data/
     filing_metadata.json
     <filing-date>_<form>_<accession>.html
   raw/.edgar_cache/
+  human_readable/amzn/
+    <filing-date>_<form>_<accession>.md
   processed/amzn/
     cleaning_manifest.json
     cleaned_filings/
@@ -94,17 +114,39 @@ outputs/data_summary/
   amzn_dataset_summary.json
 ```
 
+The default multi-company run also creates:
+
+```text
+data/processed/faang/
+  faang_filing_chunks.csv
+  faang_filing_chunks.jsonl
+outputs/data_summary/
+  faang_dataset_summary.json
+  faang_filing_inventory.csv
+  faang_cleaning_summary.csv
+  faang_chunk_summary_by_ticker_form.csv
+  faang_missingness_summary.csv
+  faang_outlier_summary.csv
+  faang_section_summary.csv
+  faang_data_description.md
+```
+
 HTML is preferred as the raw format because it preserves more of the source
 document structure. If a filing has no usable HTML, the downloader stores the
 plain text returned by `edgartools`. The library's internal response cache is
 kept below ignored `data/raw/.edgar_cache/` by default rather than in a user's
 home directory.
 
-`data/raw/` and `data/processed/` are ignored by Git. SEC documents can be
-large, are reproducible from their accession numbers, and may change the size
-of the repository substantially. The lightweight summary files contain
-metadata and counts rather than filing text, so they may be retained for
-inspection or a course presentation.
+Human-readable filing copies are saved under `data/human_readable/`. Markdown
+is preferred using EdgarTools' native filing Markdown renderer. If Markdown
+rendering is unavailable for a filing, the pipeline falls back to a plain-text
+human-readable file and records a warning in the filing manifest.
+
+`data/raw/`, `data/processed/`, and `data/human_readable/` are ignored by Git.
+SEC documents can be large, are reproducible from their accession numbers, and
+may change the size of the repository substantially. The lightweight summary
+files contain metadata and counts rather than filing text, so they may be
+retained for inspection or a course presentation.
 
 ## Metadata
 
@@ -123,6 +165,9 @@ inspection or a course presentation.
 | `source_url` | SEC URL for the primary filing document |
 | `local_raw_path` | Project-relative raw file path |
 | `raw_format` | `html` or fallback `text` |
+| `local_markdown_path` | Project-relative human-readable file path |
+| `human_readable_format` | `markdown` or fallback `text` |
+| `human_readable_warning` | Human-readable conversion warning, if any |
 
 The cleaning manifest carries these fields forward and adds the cleaned file
 path, raw and cleaned character lengths, and a list of warnings.
@@ -147,6 +192,14 @@ Both chunk formats contain the same rows:
 Chunks do not cross detected section boundaries. Overlap applies only between
 adjacent chunks in the same section.
 
+### Data description
+
+`faang_data_description.md` summarizes the generated dataset in readable form:
+filing counts, filing dates, character counts, retained-text ratios, chunk
+statistics, section-heading coverage, missing metadata counts, and outlier
+checks. Missing text is not imputed. Unknown section headings remain `unknown`.
+Short chunks and low retention ratios are flagged, not dropped.
+
 ## Regeneration
 
 To regenerate from current SEC EDGAR data:
@@ -156,7 +209,7 @@ To regenerate from current SEC EDGAR data:
 3. Run the complete build command.
 
 The downloader selects filings dynamically, so dates and accession numbers may
-change when Amazon files a newer report. Existing generated files are
+change when a company files a newer report. Existing generated files are
 overwritten when their names match; current manifests determine which files are
 used by later stages.
 
