@@ -1,5 +1,5 @@
 param(
-    [int]$Num8K = 5,
+    [int]$Num8K = 1,
     [int]$ChunkSize = 400,
     [int]$ChunkOverlap = 75
 )

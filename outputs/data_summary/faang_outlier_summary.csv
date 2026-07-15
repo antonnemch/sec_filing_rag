@@ -3,8 +3,8 @@ duplicate_chunk_ids,0,Validation flag; rows are not dropped automatically.
 empty_chunk_text_rows,0,Validation flag; rows are not dropped automatically.
 missing_chunk_source_files,0,Validation flag; required source files should exist.
 oversized_chunks,0,Validation failure if nonzero.
-short_chunks_under_100_words,97,Kept because short sections can be meaningful.
-low_retention_filings_under_15_pct,26,Flagged because SEC HTML includes substantial markup/tables.
+short_chunks_under_100_words,76,Kept because short sections can be meaningful.
+low_retention_filings_under_15_pct,13,Flagged because SEC HTML includes substantial markup/tables.
 missing_raw_files,0,Validation flag; raw files should exist.
 missing_human_readable_files,0,Validation flag; human-readable files should exist.
 human_readable_text_fallbacks,0,Kept as text when native Markdown rendering is unavailable.

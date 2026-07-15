@@ -1,11 +1,11 @@
 {
   "ticker": "NFLX",
-  "generated_at_utc": "2026-07-09T04:09:10.239117+00:00",
-  "filings_downloaded": 7,
+  "generated_at_utc": "2026-07-14T23:46:57.632344+00:00",
+  "filings_downloaded": 3,
   "filing_type_counts": {
     "10-K": 1,
     "10-Q": 1,
-    "8-K": 5
+    "8-K": 1
   },
   "filings": [
     {
@@ -25,36 +25,12 @@
       "filing_date": "2026-06-05",
       "accession_number": "0001065280-26-000189",
       "human_readable_path": "data/human_readable/nflx/2026-06-05_8-K_000106528026000189.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-23",
-      "accession_number": "0001065280-26-000139",
-      "human_readable_path": "data/human_readable/nflx/2026-04-23_8-K_000106528026000139.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-16",
-      "accession_number": "0001065280-26-000137",
-      "human_readable_path": "data/human_readable/nflx/2026-04-16_8-K_000106528026000137.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-02-27",
-      "accession_number": "0001193125-26-082247",
-      "human_readable_path": "data/human_readable/nflx/2026-02-27_8-K_000119312526082247.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-01-20",
-      "accession_number": "0001065280-26-000033",
-      "human_readable_path": "data/human_readable/nflx/2026-01-20_8-K_000106528026000033.md"
     }
   ],
-  "cleaned_files": 7,
-  "human_readable_files": 7,
-  "total_chunks": 211,
-  "average_words_per_chunk": 349.82,
+  "cleaned_files": 3,
+  "human_readable_files": 3,
+  "total_chunks": 194,
+  "average_words_per_chunk": 356.06,
   "chunk_size": 400,
   "chunk_overlap": 75,
   "output_paths": {

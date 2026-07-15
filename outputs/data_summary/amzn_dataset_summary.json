@@ -1,11 +1,11 @@
 {
   "ticker": "AMZN",
-  "generated_at_utc": "2026-07-09T04:08:59.557081+00:00",
-  "filings_downloaded": 7,
+  "generated_at_utc": "2026-07-14T23:46:50.406099+00:00",
+  "filings_downloaded": 3,
   "filing_type_counts": {
     "10-K": 1,
     "10-Q": 1,
-    "8-K": 5
+    "8-K": 1
   },
   "filings": [
     {
@@ -22,39 +22,15 @@
     },
     {
       "filing_type": "8-K",
-      "filing_date": "2026-06-12",
-      "accession_number": "0001104659-26-073562",
-      "human_readable_path": "data/human_readable/amzn/2026-06-12_8-K_000110465926073562.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-06-10",
-      "accession_number": "0001104659-26-072140",
-      "human_readable_path": "data/human_readable/amzn/2026-06-10_8-K_000110465926072140.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-05-22",
-      "accession_number": "0001104659-26-065717",
-      "human_readable_path": "data/human_readable/amzn/2026-05-22_8-K_000110465926065717.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-29",
-      "accession_number": "0001018724-26-000012",
-      "human_readable_path": "data/human_readable/amzn/2026-04-29_8-K_000101872426000012.md"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-14",
-      "accession_number": "0001104659-26-042880",
-      "human_readable_path": "data/human_readable/amzn/2026-04-14_8-K_000110465926042880.md"
+      "filing_date": "2026-07-09",
+      "accession_number": "0001104659-26-082293",
+      "human_readable_path": "data/human_readable/amzn/2026-07-09_8-K_000110465926082293.md"
     }
   ],
-  "cleaned_files": 7,
-  "human_readable_files": 7,
-  "total_chunks": 256,
-  "average_words_per_chunk": 347.96,
+  "cleaned_files": 3,
+  "human_readable_files": 3,
+  "total_chunks": 235,
+  "average_words_per_chunk": 366.93,
   "chunk_size": 400,
   "chunk_overlap": 75,
   "output_paths": {
