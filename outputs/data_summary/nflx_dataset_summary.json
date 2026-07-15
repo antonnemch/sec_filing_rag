@@ -1,41 +1,56 @@
 {
   "ticker": "NFLX",
-  "generated_at_utc": "2026-07-14T23:46:57.632344+00:00",
-  "filings_downloaded": 3,
+  "generated_at_utc": "2026-07-15T00:26:16.031143+00:00",
+  "filings_downloaded": 7,
   "filing_type_counts": {
     "10-K": 1,
     "10-Q": 1,
-    "8-K": 1
+    "8-K": 5
   },
   "filings": [
     {
       "filing_type": "10-K",
       "filing_date": "2026-01-23",
-      "accession_number": "0001065280-26-000034",
-      "human_readable_path": "data/human_readable/nflx/2026-01-23_10-K_000106528026000034.md"
+      "accession_number": "0001065280-26-000034"
     },
     {
       "filing_type": "10-Q",
       "filing_date": "2026-04-17",
-      "accession_number": "0001065280-26-000138",
-      "human_readable_path": "data/human_readable/nflx/2026-04-17_10-Q_000106528026000138.md"
+      "accession_number": "0001065280-26-000138"
     },
     {
       "filing_type": "8-K",
       "filing_date": "2026-06-05",
-      "accession_number": "0001065280-26-000189",
-      "human_readable_path": "data/human_readable/nflx/2026-06-05_8-K_000106528026000189.md"
+      "accession_number": "0001065280-26-000189"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-04-23",
+      "accession_number": "0001065280-26-000139"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-04-16",
+      "accession_number": "0001065280-26-000137"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-02-27",
+      "accession_number": "0001193125-26-082247"
+    },
+    {
+      "filing_type": "8-K",
+      "filing_date": "2026-01-20",
+      "accession_number": "0001065280-26-000033"
     }
   ],
-  "cleaned_files": 3,
-  "human_readable_files": 3,
-  "total_chunks": 194,
-  "average_words_per_chunk": 356.06,
+  "cleaned_files": 7,
+  "total_chunks": 211,
+  "average_words_per_chunk": 349.82,
   "chunk_size": 400,
   "chunk_overlap": 75,
   "output_paths": {
     "raw_manifest": "data/raw/nflx/filing_metadata.json",
-    "human_readable_dir": "data/human_readable/nflx",
     "cleaning_manifest": "data/processed/nflx/cleaning_manifest.json",
     "chunks_csv": "data/processed/nflx/nflx_filing_chunks.csv",
     "chunks_jsonl": "data/processed/nflx/nflx_filing_chunks.jsonl",

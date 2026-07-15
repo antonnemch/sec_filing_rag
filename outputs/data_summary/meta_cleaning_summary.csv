@@ -2,3 +2,7 @@ ticker,filing_type,filing_date,accession_number,raw_length,cleaned_length,retain
 META,10-K,2026-01-29,0001628280-26-003942,2371750,518295,0.2185,html_tables_flattened_to_text
 META,10-Q,2026-04-30,0001628280-26-028526,1485906,388237,0.2613,html_tables_flattened_to_text
 META,8-K,2026-05-29,0001628280-26-039193,79404,9323,0.1174,large_length_reduction; html_tables_flattened_to_text
+META,8-K,2026-05-04,0001193125-26-204128,32294,6663,0.2063,html_tables_flattened_to_text; no_section_headings_detected
+META,8-K,2026-04-29,0001628280-26-028364,28957,3931,0.1358,large_length_reduction; html_tables_flattened_to_text
+META,8-K,2026-04-14,0001628280-26-025108,24484,2871,0.1173,large_length_reduction; html_tables_flattened_to_text
+META,8-K,2026-01-28,0001628280-26-003832,29178,3957,0.1356,large_length_reduction; html_tables_flattened_to_text

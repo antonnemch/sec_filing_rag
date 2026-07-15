@@ -147,8 +147,10 @@ activemq-data/
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# Environments — never commit real credentials
 .env
+.env.*
+!.env.example
 .envrc
 .venv
 env/
@@ -211,6 +213,13 @@ tempCodeRunnerFile.py
 /data/processed/
 /data/human_readable/
 /.test-data-*/
+
+# Generated eval outputs (large, contain LLM responses)
+/outputs/eval_results/
+
+# macOS metadata
+.DS_Store
+**/.DS_Store
 
 # PyPI configuration file
 .pypirc

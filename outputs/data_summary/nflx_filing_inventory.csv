@@ -1,4 +1,8 @@
-company,ticker,cik,filing_type,filing_date,accession_number,source_url,local_raw_path,raw_format,local_markdown_path,human_readable_format,human_readable_warning
-NETFLIX INC,NFLX,0001065280,10-K,2026-01-23,0001065280-26-000034,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000034/nflx-20251231.htm,data/raw/nflx/2026-01-23_10-K_000106528026000034.html,html,data/human_readable/nflx/2026-01-23_10-K_000106528026000034.md,markdown,
-NETFLIX INC,NFLX,0001065280,10-Q,2026-04-17,0001065280-26-000138,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000138/nflx-20260331.htm,data/raw/nflx/2026-04-17_10-Q_000106528026000138.html,html,data/human_readable/nflx/2026-04-17_10-Q_000106528026000138.md,markdown,
-NETFLIX INC,NFLX,0001065280,8-K,2026-06-05,0001065280-26-000189,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000189/nflx-20260604.htm,data/raw/nflx/2026-06-05_8-K_000106528026000189.html,html,data/human_readable/nflx/2026-06-05_8-K_000106528026000189.md,markdown,
+company,ticker,cik,filing_type,filing_date,accession_number,source_url,local_raw_path,raw_format
+NETFLIX INC,NFLX,0001065280,10-K,2026-01-23,0001065280-26-000034,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000034/nflx-20251231.htm,data/raw/nflx/2026-01-23_10-K_000106528026000034.html,html
+NETFLIX INC,NFLX,0001065280,10-Q,2026-04-17,0001065280-26-000138,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000138/nflx-20260331.htm,data/raw/nflx/2026-04-17_10-Q_000106528026000138.html,html
+NETFLIX INC,NFLX,0001065280,8-K,2026-06-05,0001065280-26-000189,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000189/nflx-20260604.htm,data/raw/nflx/2026-06-05_8-K_000106528026000189.html,html
+NETFLIX INC,NFLX,0001065280,8-K,2026-04-23,0001065280-26-000139,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000139/nflx-20260422.htm,data/raw/nflx/2026-04-23_8-K_000106528026000139.html,html
+NETFLIX INC,NFLX,0001065280,8-K,2026-04-16,0001065280-26-000137,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000137/nflx-20260410.htm,data/raw/nflx/2026-04-16_8-K_000106528026000137.html,html
+NETFLIX INC,NFLX,0001065280,8-K,2026-02-27,0001193125-26-082247,https://www.sec.gov/Archives/edgar/data/1065280/000119312526082247/d120618d8k.htm,data/raw/nflx/2026-02-27_8-K_000119312526082247.html,html
+NETFLIX INC,NFLX,0001065280,8-K,2026-01-20,0001065280-26-000033,https://www.sec.gov/Archives/edgar/data/1065280/000106528026000033/nflx-20260120.htm,data/raw/nflx/2026-01-20_8-K_000106528026000033.html,html
