@@ -2,7 +2,3 @@ ticker,filing_type,filing_date,accession_number,raw_length,cleaned_length,retain
 NFLX,10-K,2026-01-23,0001065280-26-000034,2137739,275297,0.1288,large_length_reduction; html_tables_flattened_to_text
 NFLX,10-Q,2026-04-17,0001065280-26-000138,1231266,97574,0.0792,large_length_reduction; html_tables_flattened_to_text
 NFLX,8-K,2026-06-05,0001065280-26-000189,61217,6024,0.0984,large_length_reduction; html_tables_flattened_to_text
-NFLX,8-K,2026-04-23,0001065280-26-000139,21279,3706,0.1742,html_tables_flattened_to_text
-NFLX,8-K,2026-04-16,0001065280-26-000137,25115,4703,0.1873,html_tables_flattened_to_text
-NFLX,8-K,2026-02-27,0001193125-26-082247,27406,7097,0.259,html_tables_flattened_to_text; no_section_headings_detected
-NFLX,8-K,2026-01-20,0001065280-26-000033,34946,13174,0.377,html_tables_flattened_to_text

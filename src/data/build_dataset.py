@@ -48,7 +48,7 @@ def resolve_requested_tickers(
 
 def build_single_dataset(
     ticker: str = "AMZN",
-    num_8k: int = 5,
+    num_8k: int = 1,
     chunk_size: int = 400,
     chunk_overlap: int = 75,
     project_root: Path = PROJECT_ROOT,
@@ -187,7 +187,7 @@ def combine_chunk_outputs(
 def build_dataset(
     ticker: str | None = None,
     tickers: Iterable[str] | None = None,
-    num_8k: int = 5,
+    num_8k: int = 1,
     chunk_size: int = 400,
     chunk_overlap: int = 75,
     project_root: Path = PROJECT_ROOT,
@@ -270,7 +270,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-8k",
         type=int,
-        default=5,
+        default=1,
         help="Number of recent unamended 8-K filings to download per ticker.",
     )
     parser.add_argument(

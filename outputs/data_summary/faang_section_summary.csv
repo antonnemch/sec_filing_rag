@@ -1,97 +1,81 @@
 section_heading,chunks,tickers,filing_types,chunk_pct
-Item 1A. Risk Factors,319,"AAPL, AMZN, META, NFLX","10-K, 10-Q",23.02
-Item 8. Financial Statements and Supplementary Data,160,"AAPL, AMZN, META, NFLX",10-K,11.54
-unknown,109,"AAPL, AMZN, GOOG, META, NFLX","10-K, 10-Q, 8-K",7.86
-Item 1. Financial Statements,84,"AAPL, AMZN, META",10-Q,6.06
-ITEM 8. FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA,64,GOOG,10-K,4.62
-Item 16. Form 10–K Summary,54,NFLX,10-K,3.9
-Item 7. Management’s Discussion and Analysis of Financial Condition and Results of Operations,48,"AAPL, AMZN, NFLX",10-K,3.46
-ITEM 1A. RISK FACTORS,42,GOOG,"10-K, 10-Q",3.03
-Item 2. Management’s Discussion and Analysis of Financial Condition and Results of Operations,41,"AAPL, AMZN, NFLX",10-Q,2.96
-ITEM 1. FINANCIAL STATEMENTS,40,GOOG,10-Q,2.89
-Item 1. Business,31,"AAPL, AMZN, META, NFLX",10-K,2.24
-Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations,29,META,10-K,2.09
-Item 1. Legal Proceedings,26,"AAPL, AMZN, META, NFLX",10-Q,1.88
-ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS,25,GOOG,10-K,1.8
-Item 3. Legal Proceedings,24,"AAPL, AMZN, META, NFLX",10-K,1.73
-Item 2. Management's Discussion and Analysis of Financial Condition and Results of Operations,23,META,10-Q,1.66
-ITEM 2. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS,22,GOOG,10-Q,1.59
-Item 9A. Controls and Procedures,12,"AAPL, AMZN, META, NFLX",10-K,0.87
-ITEM 1. BUSINESS,11,GOOG,10-K,0.79
-Item 7A. Quantitative and Qualitative Disclosures About Market Risk,11,"AAPL, AMZN, META, NFLX",10-K,0.79
-Item 15. Exhibit and Financial Statement Schedules,10,"AAPL, META",10-K,0.72
-Item 9.01 Financial Statements and Exhibits.,10,"AAPL, META, NFLX",8-K,0.72
-Item 9C. Disclosure Regarding Foreign Jurisdictions that Prevent Inspections,9,"AAPL, AMZN, META, NFLX",10-K,0.65
-Item 3. Quantitative and Qualitative Disclosures About Market Risk,8,"AAPL, AMZN, META, NFLX",10-Q,0.58
-Item 1C. Cybersecurity,8,"AAPL, AMZN, META, NFLX",10-K,0.58
-"ITEM 15. EXHIBITS, FINANCIAL STATEMENT SCHEDULES",7,GOOG,10-K,0.51
-ITEM 9.01. FINANCIAL STATEMENTS AND EXHIBITS.,7,AMZN,8-K,0.51
-Item 2.02 Results of Operations and Financial Condition.,6,"AAPL, META, NFLX",8-K,0.43
-Item 1.01. Entry into a Material Definitive Agreement.,6,GOOG,8-K,0.43
-Item 4. Mine Safety Disclosures,6,"AAPL, AMZN, META, NFLX","10-K, 10-Q",0.43
-Item 6. Exhibits,5,"AAPL, AMZN, META, NFLX",10-Q,0.36
-Item 9B. Other Information,5,"AAPL, AMZN, META, NFLX",10-K,0.36
-Item 5.07 Submission of Matters to a Vote of Security Holders.,4,"META, NFLX",8-K,0.29
-Item 5. Other Information,4,"AAPL, AMZN, META, NFLX",10-Q,0.29
-Item 4. Controls and Procedures,4,"AAPL, AMZN, META, NFLX",10-Q,0.29
-"Item 5. Market for Registrant’s Common Equity, Related Stockholder Matters and Issuer Purchases of Equity Securities",4,"AAPL, NFLX",10-K,0.29
-Item 2. Properties,4,"AAPL, AMZN, META, NFLX",10-K,0.29
-Item 1B. Unresolved Staff Comments,4,"AAPL, AMZN, META, NFLX",10-K,0.29
-ITEM 7A. QUANTITATIVE AND QUALITATIVE DISCLOSURES ABOUT MARKET RISK,4,GOOG,10-K,0.29
-Item 2. Unregistered Sales of Equity Securities and Use of Proceeds,4,"AAPL, AMZN, META, NFLX",10-Q,0.29
-Item 14. Principal Accountant Fees and Services,3,"AAPL, META, NFLX",10-K,0.22
-Item 12. Security Ownership of Certain Beneficial Owners and Management and Related Stockholder Matters,3,"AAPL, META, NFLX",10-K,0.22
-Item 6. [Reserved],3,"AAPL, META, NFLX",10-K,0.22
-Item 9. Changes in and Disagreements with Accountants on Accounting and Financial Disclosure,3,"AAPL, META, NFLX",10-K,0.22
-Item 9.01. Financial Statements and Exhibits.,3,GOOG,8-K,0.22
-Item 8.01. Other Events.,3,GOOG,8-K,0.22
-Item 3.03. Material Modification to Rights of Security Holders.,3,GOOG,8-K,0.22
-"Item 10. Directors, Executive Officers and Corporate Governance",3,"AAPL, META, NFLX",10-K,0.22
-"Item 13. Certain Relationships and Related Transactions, and Director Independence",3,"AAPL, META, NFLX",10-K,0.22
-"ITEM 5. MARKET FOR REGISTRANT’S COMMON EQUITY, RELATED STOCKHOLDER MATTERS, AND ISSUER PURCHASES OF EQUITY SECURITIES",3,GOOG,10-K,0.22
-Item 11. Executive Compensation,3,"AAPL, META, NFLX",10-K,0.22
-Item 16. Form 10-K Summary,3,"AAPL, META",10-K,0.22
-Item 3. Defaults Upon Senior Securities,2,"AAPL, AMZN",10-Q,0.14
-ITEM 1.01 ENTRY INTO A MATERIAL,2,AMZN,8-K,0.14
-ITEM 2.02. RESULTS OF OPERATIONS AND FINANCIAL CONDITION.,2,AMZN,8-K,0.14
-ITEM 5.07. SUBMISSION OF MATTERS TO A VOTE OF SECURITY,2,AMZN,8-K,0.14
-ITEM 16. FORM 10-K SUMMARY,2,GOOG,10-K,0.14
-Item 8.01 Other Events.,2,NFLX,8-K,0.14
-Item 5.02 Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers.,2,"META, NFLX",8-K,0.14
-ITEM 1C. CYBERSECURITY,2,GOOG,10-K,0.14
-ITEM 6. EXHIBITS,2,GOOG,10-Q,0.14
-ITEM 7.01. REGULATION,2,AMZN,8-K,0.14
-ITEM 9A. CONTROLS AND PROCEDURES,2,GOOG,10-K,0.14
-"Item 5. Market for Registrant's Common Equity, Related Stockholder Matters and Issuer Purchases of Equity Securities",2,META,10-K,0.14
-ITEM 6. [Reserved],1,GOOG,10-K,0.07
-ITEM 4. MINE SAFETY DISCLOSURES,1,GOOG,10-K,0.07
-ITEM 5. OTHER INFORMATION,1,GOOG,10-Q,0.07
-ITEM 5.07. SUBMISSION,1,AMZN,8-K,0.07
-ITEM 2.03. CREATION OF A DIRECT FINANCIAL OBLIGATION OR AN OBLIGATION UNDER AN OFF-BALANCE SHEET ARRANGEMENT OF A REGISTRANT.,1,AMZN,8-K,0.07
-ITEM 3. LEGAL PROCEEDINGS,1,GOOG,10-K,0.07
-ITEM 3. QUANTITATIVE AND QUALITATIVE DISCLOSURES ABOUT MARKET RISK,1,GOOG,10-Q,0.07
-ITEM 4. CONTROLS AND PROCEDURES,1,GOOG,10-Q,0.07
-ITEM 2.03 CREATION OF A DIRECT FINANCIAL OBLIGATION OR AN OBLIGATION,1,AMZN,8-K,0.07
-ITEM 2. UNREGISTERED SALES OF EQUITY SECURITIES AND USE OF PROCEEDS,1,GOOG,10-Q,0.07
-ITEM 2. PROPERTIES,1,GOOG,10-K,0.07
-ITEM 1.01. ENTRY INTO A MATERIAL DEFINITIVE AGREEMENT.,1,AMZN,8-K,0.07
-ITEM 1. LEGAL PROCEEDINGS,1,GOOG,10-Q,0.07
-ITEM 14. PRINCIPAL ACCOUNTANT FEES AND SERVICES,1,GOOG,10-K,0.07
-"ITEM 13. CERTAIN RELATIONSHIPS AND RELATED TRANSACTIONS, AND DIRECTOR INDEPENDENCE",1,GOOG,10-K,0.07
-ITEM 1B. UNRESOLVED STAFF COMMENTS,1,GOOG,10-K,0.07
-ITEM 11. EXECUTIVE COMPENSATION,1,GOOG,10-K,0.07
-"ITEM 10. DIRECTORS, EXECUTIVE OFFICERS, AND CORPORATE GOVERNANCE",1,GOOG,10-K,0.07
-ITEM 12. SECURITY OWNERSHIP OF CERTAIN BENEFICIAL OWNERS AND MANAGEMENT AND RELATED STOCKHOLDER MATTERS,1,GOOG,10-K,0.07
-ITEM 8.01. OTHER EVENTS.,1,AMZN,8-K,0.07
-ITEM 9. CHANGES IN AND DISAGREEMENTS WITH ACCOUNTANTS ON ACCOUNTING AND FINANCIAL DISCLOSURE,1,GOOG,10-K,0.07
-ITEM 9.01. FINANCIAL,1,AMZN,8-K,0.07
-ITEM 9B. OTHER INFORMATION,1,GOOG,10-K,0.07
-ITEM 9C. DISCLOSURE REGARDING FOREIGN JURISDICTIONS THAT PREVENT INSPECTIONS,1,GOOG,10-K,0.07
-Item 13 .,1,AAPL,10-K,0.07
-Item 12 .,1,AAPL,10-K,0.07
-"Item 15. Exhibits, Financial Statement Schedules",1,NFLX,10-K,0.07
-"Item 5. Market for the Registrant’s Common Stock, Related Shareholder Matters, and Issuer Purchases of Equity Securities",1,AMZN,10-K,0.07
-Item 6. Reserved,1,AMZN,10-K,0.07
-Item 5.03. Amendments to Articles of Incorporation or Bylaws; Change in Fiscal Year.,1,GOOG,8-K,0.07
-Item 7.01. Regulation FD Disclosure.,1,GOOG,8-K,0.07
-Item 9. Changes in and Disagreements with Accountants On Accounting and Financial Disclosure,1,AMZN,10-K,0.07
+Item 1A. Risk Factors,319,"AAPL, AMZN, META, NFLX","10-K, 10-Q",24.52
+Item 8. Financial Statements and Supplementary Data,160,"AAPL, AMZN, META, NFLX",10-K,12.3
+Item 1. Financial Statements,84,"AAPL, AMZN, META",10-Q,6.46
+unknown,75,"AAPL, AMZN, GOOG, META, NFLX","10-K, 10-Q, 8-K",5.76
+ITEM 8. FINANCIAL STATEMENTS AND SUPPLEMENTARY DATA,64,GOOG,10-K,4.92
+Item 16. Form 10–K Summary,54,NFLX,10-K,4.15
+Item 7. Management’s Discussion and Analysis of Financial Condition and Results of Operations,48,"AAPL, AMZN, NFLX",10-K,3.69
+ITEM 1A. RISK FACTORS,42,GOOG,"10-K, 10-Q",3.23
+Item 2. Management’s Discussion and Analysis of Financial Condition and Results of Operations,41,"AAPL, AMZN, NFLX",10-Q,3.15
+ITEM 1. FINANCIAL STATEMENTS,40,GOOG,10-Q,3.07
+Item 1. Business,31,"AAPL, AMZN, META, NFLX",10-K,2.38
+Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations,29,META,10-K,2.23
+Item 1. Legal Proceedings,26,"AAPL, AMZN, META, NFLX",10-Q,2.0
+ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS,25,GOOG,10-K,1.92
+Item 3. Legal Proceedings,24,"AAPL, AMZN, META, NFLX",10-K,1.84
+Item 2. Management's Discussion and Analysis of Financial Condition and Results of Operations,23,META,10-Q,1.77
+ITEM 2. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS,22,GOOG,10-Q,1.69
+Item 9A. Controls and Procedures,12,"AAPL, AMZN, META, NFLX",10-K,0.92
+ITEM 1. BUSINESS,11,GOOG,10-K,0.85
+Item 7A. Quantitative and Qualitative Disclosures About Market Risk,11,"AAPL, AMZN, META, NFLX",10-K,0.85
+Item 15. Exhibit and Financial Statement Schedules,10,"AAPL, META",10-K,0.77
+Item 9C. Disclosure Regarding Foreign Jurisdictions that Prevent Inspections,9,"AAPL, AMZN, META, NFLX",10-K,0.69
+Item 1C. Cybersecurity,8,"AAPL, AMZN, META, NFLX",10-K,0.61
+Item 3. Quantitative and Qualitative Disclosures About Market Risk,8,"AAPL, AMZN, META, NFLX",10-Q,0.61
+"ITEM 15. EXHIBITS, FINANCIAL STATEMENT SCHEDULES",7,GOOG,10-K,0.54
+Item 4. Mine Safety Disclosures,6,"AAPL, AMZN, META, NFLX","10-K, 10-Q",0.46
+Item 9B. Other Information,5,"AAPL, AMZN, META, NFLX",10-K,0.38
+Item 6. Exhibits,5,"AAPL, AMZN, META, NFLX",10-Q,0.38
+ITEM 7A. QUANTITATIVE AND QUALITATIVE DISCLOSURES ABOUT MARKET RISK,4,GOOG,10-K,0.31
+Item 5. Other Information,4,"AAPL, AMZN, META, NFLX",10-Q,0.31
+Item 2. Unregistered Sales of Equity Securities and Use of Proceeds,4,"AAPL, AMZN, META, NFLX",10-Q,0.31
+Item 2. Properties,4,"AAPL, AMZN, META, NFLX",10-K,0.31
+"Item 5. Market for Registrant’s Common Equity, Related Stockholder Matters and Issuer Purchases of Equity Securities",4,"AAPL, NFLX",10-K,0.31
+Item 1B. Unresolved Staff Comments,4,"AAPL, AMZN, META, NFLX",10-K,0.31
+Item 5.07 Submission of Matters to a Vote of Security Holders.,4,"META, NFLX",8-K,0.31
+Item 4. Controls and Procedures,4,"AAPL, AMZN, META, NFLX",10-Q,0.31
+Item 16. Form 10-K Summary,3,"AAPL, META",10-K,0.23
+Item 14. Principal Accountant Fees and Services,3,"AAPL, META, NFLX",10-K,0.23
+Item 11. Executive Compensation,3,"AAPL, META, NFLX",10-K,0.23
+Item 6. [Reserved],3,"AAPL, META, NFLX",10-K,0.23
+"Item 13. Certain Relationships and Related Transactions, and Director Independence",3,"AAPL, META, NFLX",10-K,0.23
+"Item 10. Directors, Executive Officers and Corporate Governance",3,"AAPL, META, NFLX",10-K,0.23
+Item 9. Changes in and Disagreements with Accountants on Accounting and Financial Disclosure,3,"AAPL, META, NFLX",10-K,0.23
+ITEM 9.01. FINANCIAL STATEMENTS AND EXHIBITS.,3,AMZN,8-K,0.23
+"ITEM 5. MARKET FOR REGISTRANT’S COMMON EQUITY, RELATED STOCKHOLDER MATTERS, AND ISSUER PURCHASES OF EQUITY SECURITIES",3,GOOG,10-K,0.23
+Item 12. Security Ownership of Certain Beneficial Owners and Management and Related Stockholder Matters,3,"AAPL, META, NFLX",10-K,0.23
+ITEM 16. FORM 10-K SUMMARY,2,GOOG,10-K,0.15
+ITEM 1C. CYBERSECURITY,2,GOOG,10-K,0.15
+ITEM 9A. CONTROLS AND PROCEDURES,2,GOOG,10-K,0.15
+Item 3. Defaults Upon Senior Securities,2,"AAPL, AMZN",10-Q,0.15
+ITEM 6. EXHIBITS,2,GOOG,10-Q,0.15
+"Item 5. Market for Registrant's Common Equity, Related Stockholder Matters and Issuer Purchases of Equity Securities",2,META,10-K,0.15
+ITEM 2. UNREGISTERED SALES OF EQUITY SECURITIES AND USE OF PROCEEDS,1,GOOG,10-Q,0.08
+ITEM 12. SECURITY OWNERSHIP OF CERTAIN BENEFICIAL OWNERS AND MANAGEMENT AND RELATED STOCKHOLDER MATTERS,1,GOOG,10-K,0.08
+"ITEM 13. CERTAIN RELATIONSHIPS AND RELATED TRANSACTIONS, AND DIRECTOR INDEPENDENCE",1,GOOG,10-K,0.08
+ITEM 14. PRINCIPAL ACCOUNTANT FEES AND SERVICES,1,GOOG,10-K,0.08
+ITEM 1. LEGAL PROCEEDINGS,1,GOOG,10-Q,0.08
+ITEM 2. PROPERTIES,1,GOOG,10-K,0.08
+ITEM 1B. UNRESOLVED STAFF COMMENTS,1,GOOG,10-K,0.08
+"ITEM 10. DIRECTORS, EXECUTIVE OFFICERS, AND CORPORATE GOVERNANCE",1,GOOG,10-K,0.08
+ITEM 11. EXECUTIVE COMPENSATION,1,GOOG,10-K,0.08
+ITEM 9B. OTHER INFORMATION,1,GOOG,10-K,0.08
+ITEM 4. CONTROLS AND PROCEDURES,1,GOOG,10-Q,0.08
+ITEM 4. MINE SAFETY DISCLOSURES,1,GOOG,10-K,0.08
+"Item 15. Exhibits, Financial Statement Schedules",1,NFLX,10-K,0.08
+Item 13 .,1,AAPL,10-K,0.08
+ITEM 9C. DISCLOSURE REGARDING FOREIGN JURISDICTIONS THAT PREVENT INSPECTIONS,1,GOOG,10-K,0.08
+Item 12 .,1,AAPL,10-K,0.08
+ITEM 3. QUANTITATIVE AND QUALITATIVE DISCLOSURES ABOUT MARKET RISK,1,GOOG,10-Q,0.08
+ITEM 8.01. OTHER EVENTS.,1,AMZN,8-K,0.08
+ITEM 9. CHANGES IN AND DISAGREEMENTS WITH ACCOUNTANTS ON ACCOUNTING AND FINANCIAL DISCLOSURE,1,GOOG,10-K,0.08
+ITEM 3. LEGAL PROCEEDINGS,1,GOOG,10-K,0.08
+ITEM 6. [Reserved],1,GOOG,10-K,0.08
+ITEM 5. OTHER INFORMATION,1,GOOG,10-Q,0.08
+"Item 5. Market for the Registrant’s Common Stock, Related Shareholder Matters, and Issuer Purchases of Equity Securities",1,AMZN,10-K,0.08
+Item 2.02 Results of Operations and Financial Condition.,1,AAPL,8-K,0.08
+Item 6. Reserved,1,AMZN,10-K,0.08
+Item 9.01 Financial Statements and Exhibits.,1,AAPL,8-K,0.08
+Item 8.01 Other Events.,1,NFLX,8-K,0.08
+Item 9. Changes in and Disagreements with Accountants On Accounting and Financial Disclosure,1,AMZN,10-K,0.08

@@ -7,26 +7,26 @@
     "NFLX",
     "GOOG"
   ],
-  "generated_at_utc": "2026-07-09T04:15:15.384221+00:00",
-  "filings_downloaded": 35,
+  "generated_at_utc": "2026-07-14T23:47:02.939489+00:00",
+  "filings_downloaded": 15,
   "filing_type_counts": {
     "10-K": 5,
     "10-Q": 5,
-    "8-K": 25
+    "8-K": 5
   },
-  "cleaned_files": 35,
-  "human_readable_files": 35,
-  "total_chunks": 1386,
-  "average_words_per_chunk": 359.11,
+  "cleaned_files": 15,
+  "human_readable_files": 15,
+  "total_chunks": 1301,
+  "average_words_per_chunk": 366.74,
   "word_count_stats": {
     "min": 1,
     "p25": 400.0,
     "median": 400.0,
-    "mean": 359.11,
+    "mean": 366.74,
     "p75": 400.0,
     "max": 400
   },
-  "section_heading_coverage_pct": 92.14,
+  "section_heading_coverage_pct": 94.24,
   "output_paths": {
     "combined_chunks_csv": "data/processed/faang/faang_filing_chunks.csv",
     "combined_chunks_jsonl": "data/processed/faang/faang_filing_chunks.jsonl",
@@ -38,5 +38,238 @@
     "section_summary": "outputs/data_summary/faang_section_summary.csv",
     "data_description": "outputs/data_summary/faang_data_description.md",
     "dataset_summary": "outputs/data_summary/faang_dataset_summary.json"
-  }
+  },
+  "ticker_summaries": [
+    {
+      "ticker": "META",
+      "generated_at_utc": "2026-07-14T23:46:46.298791+00:00",
+      "filings_downloaded": 3,
+      "filing_type_counts": {
+        "10-K": 1,
+        "10-Q": 1,
+        "8-K": 1
+      },
+      "filings": [
+        {
+          "filing_type": "10-K",
+          "filing_date": "2026-01-29",
+          "accession_number": "0001628280-26-003942",
+          "human_readable_path": "data/human_readable/meta/2026-01-29_10-K_000162828026003942.md"
+        },
+        {
+          "filing_type": "10-Q",
+          "filing_date": "2026-04-30",
+          "accession_number": "0001628280-26-028526",
+          "human_readable_path": "data/human_readable/meta/2026-04-30_10-Q_000162828026028526.md"
+        },
+        {
+          "filing_type": "8-K",
+          "filing_date": "2026-05-29",
+          "accession_number": "0001628280-26-039193",
+          "human_readable_path": "data/human_readable/meta/2026-05-29_8-K_000162828026039193.md"
+        }
+      ],
+      "cleaned_files": 3,
+      "human_readable_files": 3,
+      "total_chunks": 453,
+      "average_words_per_chunk": 381.69,
+      "chunk_size": 400,
+      "chunk_overlap": 75,
+      "output_paths": {
+        "raw_manifest": "data/raw/meta/filing_metadata.json",
+        "human_readable_dir": "data/human_readable/meta",
+        "cleaning_manifest": "data/processed/meta/cleaning_manifest.json",
+        "chunks_csv": "data/processed/meta/meta_filing_chunks.csv",
+        "chunks_jsonl": "data/processed/meta/meta_filing_chunks.jsonl",
+        "filing_inventory": "outputs/data_summary/meta_filing_inventory.csv",
+        "cleaning_summary": "outputs/data_summary/meta_cleaning_summary.csv",
+        "dataset_summary": "outputs/data_summary/meta_dataset_summary.json"
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "generated_at_utc": "2026-07-14T23:46:50.406099+00:00",
+      "filings_downloaded": 3,
+      "filing_type_counts": {
+        "10-K": 1,
+        "10-Q": 1,
+        "8-K": 1
+      },
+      "filings": [
+        {
+          "filing_type": "10-K",
+          "filing_date": "2026-02-06",
+          "accession_number": "0001018724-26-000004",
+          "human_readable_path": "data/human_readable/amzn/2026-02-06_10-K_000101872426000004.md"
+        },
+        {
+          "filing_type": "10-Q",
+          "filing_date": "2026-04-30",
+          "accession_number": "0001018724-26-000014",
+          "human_readable_path": "data/human_readable/amzn/2026-04-30_10-Q_000101872426000014.md"
+        },
+        {
+          "filing_type": "8-K",
+          "filing_date": "2026-07-09",
+          "accession_number": "0001104659-26-082293",
+          "human_readable_path": "data/human_readable/amzn/2026-07-09_8-K_000110465926082293.md"
+        }
+      ],
+      "cleaned_files": 3,
+      "human_readable_files": 3,
+      "total_chunks": 235,
+      "average_words_per_chunk": 366.93,
+      "chunk_size": 400,
+      "chunk_overlap": 75,
+      "output_paths": {
+        "raw_manifest": "data/raw/amzn/filing_metadata.json",
+        "human_readable_dir": "data/human_readable/amzn",
+        "cleaning_manifest": "data/processed/amzn/cleaning_manifest.json",
+        "chunks_csv": "data/processed/amzn/amzn_filing_chunks.csv",
+        "chunks_jsonl": "data/processed/amzn/amzn_filing_chunks.jsonl",
+        "filing_inventory": "outputs/data_summary/amzn_filing_inventory.csv",
+        "cleaning_summary": "outputs/data_summary/amzn_cleaning_summary.csv",
+        "dataset_summary": "outputs/data_summary/amzn_dataset_summary.json"
+      }
+    },
+    {
+      "ticker": "AAPL",
+      "generated_at_utc": "2026-07-14T23:46:53.554994+00:00",
+      "filings_downloaded": 3,
+      "filing_type_counts": {
+        "10-K": 1,
+        "10-Q": 1,
+        "8-K": 1
+      },
+      "filings": [
+        {
+          "filing_type": "10-K",
+          "filing_date": "2025-10-31",
+          "accession_number": "0000320193-25-000079",
+          "human_readable_path": "data/human_readable/aapl/2025-10-31_10-K_000032019325000079.md"
+        },
+        {
+          "filing_type": "10-Q",
+          "filing_date": "2026-05-01",
+          "accession_number": "0000320193-26-000013",
+          "human_readable_path": "data/human_readable/aapl/2026-05-01_10-Q_000032019326000013.md"
+        },
+        {
+          "filing_type": "8-K",
+          "filing_date": "2026-04-30",
+          "accession_number": "0000320193-26-000011",
+          "human_readable_path": "data/human_readable/aapl/2026-04-30_8-K_000032019326000011.md"
+        }
+      ],
+      "cleaned_files": 3,
+      "human_readable_files": 3,
+      "total_chunks": 161,
+      "average_words_per_chunk": 336.26,
+      "chunk_size": 400,
+      "chunk_overlap": 75,
+      "output_paths": {
+        "raw_manifest": "data/raw/aapl/filing_metadata.json",
+        "human_readable_dir": "data/human_readable/aapl",
+        "cleaning_manifest": "data/processed/aapl/cleaning_manifest.json",
+        "chunks_csv": "data/processed/aapl/aapl_filing_chunks.csv",
+        "chunks_jsonl": "data/processed/aapl/aapl_filing_chunks.jsonl",
+        "filing_inventory": "outputs/data_summary/aapl_filing_inventory.csv",
+        "cleaning_summary": "outputs/data_summary/aapl_cleaning_summary.csv",
+        "dataset_summary": "outputs/data_summary/aapl_dataset_summary.json"
+      }
+    },
+    {
+      "ticker": "NFLX",
+      "generated_at_utc": "2026-07-14T23:46:57.632344+00:00",
+      "filings_downloaded": 3,
+      "filing_type_counts": {
+        "10-K": 1,
+        "10-Q": 1,
+        "8-K": 1
+      },
+      "filings": [
+        {
+          "filing_type": "10-K",
+          "filing_date": "2026-01-23",
+          "accession_number": "0001065280-26-000034",
+          "human_readable_path": "data/human_readable/nflx/2026-01-23_10-K_000106528026000034.md"
+        },
+        {
+          "filing_type": "10-Q",
+          "filing_date": "2026-04-17",
+          "accession_number": "0001065280-26-000138",
+          "human_readable_path": "data/human_readable/nflx/2026-04-17_10-Q_000106528026000138.md"
+        },
+        {
+          "filing_type": "8-K",
+          "filing_date": "2026-06-05",
+          "accession_number": "0001065280-26-000189",
+          "human_readable_path": "data/human_readable/nflx/2026-06-05_8-K_000106528026000189.md"
+        }
+      ],
+      "cleaned_files": 3,
+      "human_readable_files": 3,
+      "total_chunks": 194,
+      "average_words_per_chunk": 356.06,
+      "chunk_size": 400,
+      "chunk_overlap": 75,
+      "output_paths": {
+        "raw_manifest": "data/raw/nflx/filing_metadata.json",
+        "human_readable_dir": "data/human_readable/nflx",
+        "cleaning_manifest": "data/processed/nflx/cleaning_manifest.json",
+        "chunks_csv": "data/processed/nflx/nflx_filing_chunks.csv",
+        "chunks_jsonl": "data/processed/nflx/nflx_filing_chunks.jsonl",
+        "filing_inventory": "outputs/data_summary/nflx_filing_inventory.csv",
+        "cleaning_summary": "outputs/data_summary/nflx_cleaning_summary.csv",
+        "dataset_summary": "outputs/data_summary/nflx_dataset_summary.json"
+      }
+    },
+    {
+      "ticker": "GOOG",
+      "generated_at_utc": "2026-07-14T23:47:02.698848+00:00",
+      "filings_downloaded": 3,
+      "filing_type_counts": {
+        "10-K": 1,
+        "10-Q": 1,
+        "8-K": 1
+      },
+      "filings": [
+        {
+          "filing_type": "10-K",
+          "filing_date": "2026-02-05",
+          "accession_number": "0001652044-26-000018",
+          "human_readable_path": "data/human_readable/goog/2026-02-05_10-K_000165204426000018.md"
+        },
+        {
+          "filing_type": "10-Q",
+          "filing_date": "2026-04-30",
+          "accession_number": "0001652044-26-000048",
+          "human_readable_path": "data/human_readable/goog/2026-04-30_10-Q_000165204426000048.md"
+        },
+        {
+          "filing_type": "8-K",
+          "filing_date": "2026-06-11",
+          "accession_number": "0001193125-26-267578",
+          "human_readable_path": "data/human_readable/goog/2026-06-11_8-K_000119312526267578.md"
+        }
+      ],
+      "cleaned_files": 3,
+      "human_readable_files": 3,
+      "total_chunks": 258,
+      "average_words_per_chunk": 367.38,
+      "chunk_size": 400,
+      "chunk_overlap": 75,
+      "output_paths": {
+        "raw_manifest": "data/raw/goog/filing_metadata.json",
+        "human_readable_dir": "data/human_readable/goog",
+        "cleaning_manifest": "data/processed/goog/cleaning_manifest.json",
+        "chunks_csv": "data/processed/goog/goog_filing_chunks.csv",
+        "chunks_jsonl": "data/processed/goog/goog_filing_chunks.jsonl",
+        "filing_inventory": "outputs/data_summary/goog_filing_inventory.csv",
+        "cleaning_summary": "outputs/data_summary/goog_cleaning_summary.csv",
+        "dataset_summary": "outputs/data_summary/goog_dataset_summary.json"
+      }
+    }
+  ],
+  "combined_chunks": 1301
 }
