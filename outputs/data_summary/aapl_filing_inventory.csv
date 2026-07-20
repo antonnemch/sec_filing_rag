@@ -1,8 +1,4 @@
-company,ticker,cik,filing_type,filing_date,accession_number,source_url,local_raw_path,raw_format
-Apple Inc.,AAPL,0000320193,10-K,2025-10-31,0000320193-25-000079,https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm,data/raw/aapl/2025-10-31_10-K_000032019325000079.html,html
-Apple Inc.,AAPL,0000320193,10-Q,2026-05-01,0000320193-26-000013,https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm,data/raw/aapl/2026-05-01_10-Q_000032019326000013.html,html
-Apple Inc.,AAPL,0000320193,8-K,2026-04-30,0000320193-26-000011,https://www.sec.gov/Archives/edgar/data/320193/000032019326000011/aapl-20260430.htm,data/raw/aapl/2026-04-30_8-K_000032019326000011.html,html
-Apple Inc.,AAPL,0000320193,8-K,2026-04-20,0001140361-26-015711,https://www.sec.gov/Archives/edgar/data/320193/000114036126015711/ef20071035_8k.htm,data/raw/aapl/2026-04-20_8-K_000114036126015711.html,html
-Apple Inc.,AAPL,0000320193,8-K,2026-02-24,0001140361-26-006577,https://www.sec.gov/Archives/edgar/data/320193/000114036126006577/ef20060722_8k.htm,data/raw/aapl/2026-02-24_8-K_000114036126006577.html,html
-Apple Inc.,AAPL,0000320193,8-K,2026-01-29,0000320193-26-000005,https://www.sec.gov/Archives/edgar/data/320193/000032019326000005/aapl-20260129.htm,data/raw/aapl/2026-01-29_8-K_000032019326000005.html,html
-Apple Inc.,AAPL,0000320193,8-K,2026-01-02,0001140361-26-000199,https://www.sec.gov/Archives/edgar/data/320193/000114036126000199/ef20060722_8k.htm,data/raw/aapl/2026-01-02_8-K_000114036126000199.html,html
+company,ticker,cik,filing_type,filing_date,accession_number,source_url,local_raw_path,raw_format,local_markdown_path,human_readable_format,human_readable_warning
+Apple Inc.,AAPL,0000320193,10-K,2025-10-31,0000320193-25-000079,https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm,data/raw/aapl/2025-10-31_10-K_000032019325000079.html,html,data/human_readable/aapl/2025-10-31_10-K_000032019325000079.md,markdown,
+Apple Inc.,AAPL,0000320193,10-Q,2026-05-01,0000320193-26-000013,https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm,data/raw/aapl/2026-05-01_10-Q_000032019326000013.html,html,data/human_readable/aapl/2026-05-01_10-Q_000032019326000013.md,markdown,
+Apple Inc.,AAPL,0000320193,8-K,2026-04-30,0000320193-26-000011,https://www.sec.gov/Archives/edgar/data/320193/000032019326000011/aapl-20260430.htm,data/raw/aapl/2026-04-30_8-K_000032019326000011.html,html,data/human_readable/aapl/2026-04-30_8-K_000032019326000011.md,markdown,

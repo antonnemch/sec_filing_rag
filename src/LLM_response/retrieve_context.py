@@ -4,20 +4,22 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from src.config import DEFAULT_RETRIEVAL_K
 from src.data.utils import PROJECT_ROOT
-from src.injest_data.bm25 import build_bm25_index, load_bm25_index, search_bm25
-from src.injest_data.embeddings import (
+from src.ingest_data.bm25 import build_bm25_index, load_bm25_index, search_bm25
+from src.ingest_data.embeddings import (
     build_embeddings_index,
     load_embeddings_index,
     search_embeddings,
 )
+from src.ingest_data.index_common import IndexValidationError
 
 
 def retrieve_chunks(
     question: str,
     ticker: str,
     retriever: str = "faiss",
-    k: int = 5,
+    k: int = DEFAULT_RETRIEVAL_K,
     project_root: Path = PROJECT_ROOT,
     build_if_missing: bool = True,
 ) -> list[dict]:
@@ -30,7 +32,7 @@ def retrieve_chunks(
     if retriever == "faiss":
         try:
             index, chunks = load_embeddings_index(ticker, project_root)
-        except FileNotFoundError:
+        except (FileNotFoundError, IndexValidationError):
             if not build_if_missing:
                 raise
             build_embeddings_index(ticker, project_root)
@@ -40,7 +42,7 @@ def retrieve_chunks(
     if retriever == "bm25":
         try:
             index, chunks = load_bm25_index(ticker, project_root)
-        except FileNotFoundError:
+        except (FileNotFoundError, IndexValidationError):
             if not build_if_missing:
                 raise
             build_bm25_index(ticker, project_root)

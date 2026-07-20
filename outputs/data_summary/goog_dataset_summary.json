@@ -1,56 +1,43 @@
 {
   "ticker": "GOOG",
-  "generated_at_utc": "2026-07-15T00:26:20.801468+00:00",
-  "filings_downloaded": 7,
+  "generated_at_utc": "2026-07-20T21:26:02.010559+00:00",
+  "filings_as_of": "2026-07-14",
+  "filings_downloaded": 3,
   "filing_type_counts": {
     "10-K": 1,
     "10-Q": 1,
-    "8-K": 5
+    "8-K": 1
   },
   "filings": [
     {
       "filing_type": "10-K",
       "filing_date": "2026-02-05",
-      "accession_number": "0001652044-26-000018"
+      "accession_number": "0001652044-26-000018",
+      "human_readable_path": "data/human_readable/goog/2026-02-05_10-K_000165204426000018.md"
     },
     {
       "filing_type": "10-Q",
       "filing_date": "2026-04-30",
-      "accession_number": "0001652044-26-000048"
+      "accession_number": "0001652044-26-000048",
+      "human_readable_path": "data/human_readable/goog/2026-04-30_10-Q_000165204426000048.md"
     },
     {
       "filing_type": "8-K",
       "filing_date": "2026-06-11",
-      "accession_number": "0001193125-26-267578"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-06-05",
-      "accession_number": "0001193125-26-259830"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-06-05",
-      "accession_number": "0001652044-26-000059"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-06-04",
-      "accession_number": "0001193125-26-257724"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-05-21",
-      "accession_number": "0001193125-26-234488"
+      "accession_number": "0001193125-26-267578",
+      "human_readable_path": "data/human_readable/goog/2026-06-11_8-K_000119312526267578.md"
     }
   ],
-  "cleaned_files": 7,
-  "total_chunks": 284,
-  "average_words_per_chunk": 359.85,
+  "cleaned_files": 3,
+  "human_readable_files": 3,
+  "total_chunks": 258,
+  "average_words_per_chunk": 367.38,
   "chunk_size": 400,
   "chunk_overlap": 75,
+  "chunks_sha256": "e5ba80bfeef0cade9e660916ecd0a04fd958b0d1af8f51d01497aac2da8084eb",
   "output_paths": {
     "raw_manifest": "data/raw/goog/filing_metadata.json",
+    "human_readable_dir": "data/human_readable/goog",
     "cleaning_manifest": "data/processed/goog/cleaning_manifest.json",
     "chunks_csv": "data/processed/goog/goog_filing_chunks.csv",
     "chunks_jsonl": "data/processed/goog/goog_filing_chunks.jsonl",

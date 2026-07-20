@@ -3,18 +3,33 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import re
+import tempfile
 from dataclasses import MISSING, asdict, dataclass, fields
 from pathlib import Path
 from typing import Any, Iterable
 
+from src.config import DEFAULT_MULTI_COMPANY_SLUG, DEFAULT_TICKERS
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_TICKERS = ("META", "AMZN", "AAPL", "NFLX", "GOOG")
-DEFAULT_MULTI_COMPANY_SLUG = "faang"
 _TICKER_PATTERN = re.compile(r"^[A-Z0-9.-]+$")
 _EMAIL_PATTERN = re.compile(r"\b[^@\s]+@[^@\s]+\.[^@\s]+\b")
+
+
+def load_project_env(project_root: Path = PROJECT_ROOT) -> None:
+    """Load project-local environment variables without overriding the shell."""
+
+    try:
+        from dotenv import load_dotenv
+    except ImportError as exc:  # pragma: no cover - dependency setup failure
+        raise RuntimeError(
+            "python-dotenv is not installed. Run: pip install -r requirements.txt"
+        ) from exc
+
+    load_dotenv(project_root / ".env", override=False)
 
 
 @dataclass(frozen=True)
@@ -129,14 +144,7 @@ def validate_chunk_settings(chunk_size: int, chunk_overlap: int) -> None:
 def configure_sec_identity(project_root: Path = PROJECT_ROOT) -> None:
     """Load and register the SEC identity without logging its value."""
 
-    try:
-        from dotenv import load_dotenv
-    except ImportError as exc:  # pragma: no cover - dependency setup failure
-        raise RuntimeError(
-            "python-dotenv is not installed. Run: pip install -r requirements.txt"
-        ) from exc
-
-    load_dotenv(project_root / ".env", override=False)
+    load_project_env(project_root)
     identity = os.getenv("SEC_IDENTITY") or os.getenv("EDGAR_IDENTITY")
     if not identity or not identity.strip():
         raise RuntimeError(
@@ -188,13 +196,50 @@ def resolve_project_path(
 
 
 def write_json(path: Path, value: Any) -> None:
-    """Write indented UTF-8 JSON, creating the parent directory."""
+    """Atomically write indented UTF-8 JSON."""
+
+    atomic_write_text(
+        path,
+        json.dumps(value, indent=2, ensure_ascii=False) + "\n",
+    )
+
+
+def atomic_write_text(path: Path, value: str) -> None:
+    """Atomically replace a text file with a flushed UTF-8 temporary file."""
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(value, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
     )
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(value)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def sha256_file(path: Path) -> str:
+    """Return the SHA-256 digest of a file without loading it all into memory."""
+
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def stable_json_hash(value: Any) -> str:
+    """Hash a JSON-compatible value using stable key ordering and separators."""
+
+    encoded = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def read_json(path: Path) -> Any:

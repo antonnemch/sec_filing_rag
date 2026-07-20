@@ -2,7 +2,3 @@ ticker,filing_type,filing_date,accession_number,raw_length,cleaned_length,retain
 GOOG,10-K,2026-02-05,0001652044-26-000018,2616499,346887,0.1326,large_length_reduction; html_tables_flattened_to_text
 GOOG,10-Q,2026-04-30,0001652044-26-000048,1714713,153349,0.0894,large_length_reduction; html_tables_flattened_to_text
 GOOG,8-K,2026-06-11,0001193125-26-267578,119785,9971,0.0832,large_length_reduction; html_tables_flattened_to_text; no_section_headings_detected
-GOOG,8-K,2026-06-05,0001193125-26-259830,88964,18741,0.2107,html_tables_flattened_to_text
-GOOG,8-K,2026-06-05,0001652044-26-000059,60985,5564,0.0912,large_length_reduction; html_tables_flattened_to_text; no_section_headings_detected
-GOOG,8-K,2026-06-04,0001193125-26-257724,72058,11934,0.1656,html_tables_flattened_to_text
-GOOG,8-K,2026-05-21,0001193125-26-234488,58198,5981,0.1028,large_length_reduction; html_tables_flattened_to_text
