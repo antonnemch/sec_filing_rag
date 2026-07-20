@@ -1,8 +1,4 @@
-company,ticker,cik,filing_type,filing_date,accession_number,source_url,local_raw_path,raw_format
-Alphabet Inc.,GOOG,0001652044,10-K,2026-02-05,0001652044-26-000018,https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm,data/raw/goog/2026-02-05_10-K_000165204426000018.html,html
-Alphabet Inc.,GOOG,0001652044,10-Q,2026-04-30,0001652044-26-000048,https://www.sec.gov/Archives/edgar/data/1652044/000165204426000048/goog-20260331.htm,data/raw/goog/2026-04-30_10-Q_000165204426000048.html,html
-Alphabet Inc.,GOOG,0001652044,8-K,2026-06-11,0001193125-26-267578,https://www.sec.gov/Archives/edgar/data/1652044/000119312526267578/d57679d8k.htm,data/raw/goog/2026-06-11_8-K_000119312526267578.html,html
-Alphabet Inc.,GOOG,0001652044,8-K,2026-06-05,0001193125-26-259830,https://www.sec.gov/Archives/edgar/data/1652044/000119312526259830/d36818d8k.htm,data/raw/goog/2026-06-05_8-K_000119312526259830.html,html
-Alphabet Inc.,GOOG,0001652044,8-K,2026-06-05,0001652044-26-000059,https://www.sec.gov/Archives/edgar/data/1652044/000165204426000059/goog-20260602.htm,data/raw/goog/2026-06-05_8-K_000165204426000059.html,html
-Alphabet Inc.,GOOG,0001652044,8-K,2026-06-04,0001193125-26-257724,https://www.sec.gov/Archives/edgar/data/1652044/000119312526257724/d83560d8k.htm,data/raw/goog/2026-06-04_8-K_000119312526257724.html,html
-Alphabet Inc.,GOOG,0001652044,8-K,2026-05-21,0001193125-26-234488,https://www.sec.gov/Archives/edgar/data/1652044/000119312526234488/d144566d8k.htm,data/raw/goog/2026-05-21_8-K_000119312526234488.html,html
+company,ticker,cik,filing_type,filing_date,accession_number,source_url,local_raw_path,raw_format,local_markdown_path,human_readable_format,human_readable_warning
+Alphabet Inc.,GOOG,0001652044,10-K,2026-02-05,0001652044-26-000018,https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm,data/raw/goog/2026-02-05_10-K_000165204426000018.html,html,data/human_readable/goog/2026-02-05_10-K_000165204426000018.md,markdown,
+Alphabet Inc.,GOOG,0001652044,10-Q,2026-04-30,0001652044-26-000048,https://www.sec.gov/Archives/edgar/data/1652044/000165204426000048/goog-20260331.htm,data/raw/goog/2026-04-30_10-Q_000165204426000048.html,html,data/human_readable/goog/2026-04-30_10-Q_000165204426000048.md,markdown,
+Alphabet Inc.,GOOG,0001652044,8-K,2026-06-11,0001193125-26-267578,https://www.sec.gov/Archives/edgar/data/1652044/000119312526267578/d57679d8k.htm,data/raw/goog/2026-06-11_8-K_000119312526267578.html,html,data/human_readable/goog/2026-06-11_8-K_000119312526267578.md,markdown,

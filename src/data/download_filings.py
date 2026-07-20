@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import argparse
+from datetime import date
 from pathlib import Path
 from typing import Any, Iterable
 
 import pandas as pd
+
+from src.config import DEFAULT_NUM_8K, MAX_FILING_DATE
 
 from .utils import (
     PROJECT_ROOT,
@@ -21,7 +24,6 @@ from .utils import (
     write_json,
 )
 
-
 def _normalize_latest(value: Any) -> list[Any]:
     """Normalize EdgarTools' single- and multi-filing return shapes."""
 
@@ -35,11 +37,19 @@ def _normalize_latest(value: Any) -> list[Any]:
         return [value]
 
 
-def _select_recent_filings(company: Any, form: str, count: int) -> list[Any]:
-    """Select recent unamended filings of one exact form."""
+def _select_recent_filings(
+    company: Any,
+    form: str,
+    count: int,
+    max_filing_date: date = MAX_FILING_DATE,
+) -> list[Any]:
+    """Select recent unamended filings no later than the fixed cutoff."""
 
     filings = company.get_filings(form=form, amendments=False)
     if filings is None or getattr(filings, "empty", False) or len(filings) == 0:
+        return []
+    filings = filings.filter(date=f":{max_filing_date.isoformat()}")
+    if getattr(filings, "empty", False) or len(filings) == 0:
         return []
     return _normalize_latest(filings.latest(count))
 
@@ -178,10 +188,10 @@ def _write_inventory(
 
 def download_filings(
     ticker: str = "AMZN",
-    num_8k: int = 5,
+    num_8k: int = DEFAULT_NUM_8K,
     project_root: Path = PROJECT_ROOT,
 ) -> list[FilingRecord]:
-    """Download the latest 10-K, 10-Q, and requested recent 8-K filings."""
+    """Download the latest requested filings available by 2026-07-14."""
 
     normalized_ticker = normalize_ticker(ticker)
     validate_num_8k(num_8k)
@@ -255,6 +265,7 @@ def download_filings(
         f"Downloaded {len(records)} filing(s) to "
         f"{project_relative(raw_directory, project_root)}"
     )
+    print(f"Filing cutoff: {MAX_FILING_DATE.isoformat()}")
     print(f"Metadata: {project_relative(manifest_path, project_root)}")
     print(f"Inventory: {project_relative(inventory_path, project_root)}")
     return records
@@ -270,7 +281,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-8k",
         type=int,
-        default=5,
+        default=DEFAULT_NUM_8K,
         help="Number of recent unamended 8-K filings to download.",
     )
     return parser

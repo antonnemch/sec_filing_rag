@@ -1,56 +1,43 @@
 {
   "ticker": "AMZN",
-  "generated_at_utc": "2026-07-07T21:13:09.315557+00:00",
-  "filings_downloaded": 7,
+  "generated_at_utc": "2026-07-20T21:26:01.954435+00:00",
+  "filings_as_of": "2026-07-14",
+  "filings_downloaded": 3,
   "filing_type_counts": {
     "10-K": 1,
     "10-Q": 1,
-    "8-K": 5
+    "8-K": 1
   },
   "filings": [
     {
       "filing_type": "10-K",
       "filing_date": "2026-02-06",
-      "accession_number": "0001018724-26-000004"
+      "accession_number": "0001018724-26-000004",
+      "human_readable_path": "data/human_readable/amzn/2026-02-06_10-K_000101872426000004.md"
     },
     {
       "filing_type": "10-Q",
       "filing_date": "2026-04-30",
-      "accession_number": "0001018724-26-000014"
+      "accession_number": "0001018724-26-000014",
+      "human_readable_path": "data/human_readable/amzn/2026-04-30_10-Q_000101872426000014.md"
     },
     {
       "filing_type": "8-K",
-      "filing_date": "2026-06-12",
-      "accession_number": "0001104659-26-073562"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-06-10",
-      "accession_number": "0001104659-26-072140"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-05-22",
-      "accession_number": "0001104659-26-065717"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-29",
-      "accession_number": "0001018724-26-000012"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-14",
-      "accession_number": "0001104659-26-042880"
+      "filing_date": "2026-07-09",
+      "accession_number": "0001104659-26-082293",
+      "human_readable_path": "data/human_readable/amzn/2026-07-09_8-K_000110465926082293.md"
     }
   ],
-  "cleaned_files": 7,
-  "total_chunks": 256,
-  "average_words_per_chunk": 347.96,
+  "cleaned_files": 3,
+  "human_readable_files": 3,
+  "total_chunks": 235,
+  "average_words_per_chunk": 366.93,
   "chunk_size": 400,
   "chunk_overlap": 75,
+  "chunks_sha256": "ddc70136ccf4f5b34b2781397ecbc708740bdb3cd2d5982b8e757c7b99aa2da7",
   "output_paths": {
     "raw_manifest": "data/raw/amzn/filing_metadata.json",
+    "human_readable_dir": "data/human_readable/amzn",
     "cleaning_manifest": "data/processed/amzn/cleaning_manifest.json",
     "chunks_csv": "data/processed/amzn/amzn_filing_chunks.csv",
     "chunks_jsonl": "data/processed/amzn/amzn_filing_chunks.jsonl",

@@ -10,9 +10,10 @@ from typing import Any, Iterable
 
 import pandas as pd
 
+from src.config import DEFAULT_TICKERS
+
 from .chunk_filings import CHUNK_COLUMNS
 from .utils import (
-    DEFAULT_TICKERS,
     PROJECT_ROOT,
     dataset_slug_for_tickers,
     normalize_tickers,

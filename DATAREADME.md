@@ -1,226 +1,147 @@
-# SEC Filing Data
+# SEC Filing Data Pipeline
 
-## Purpose
+## Selection policy
 
-This project uses public SEC EDGAR filings to build the document dataset for a
-financial question-answering system. The current milestone covers data
-collection, conservative text cleaning, and word-based chunking only. It does
-not implement keyword search, embeddings, a vector database, LLM calls, or RAG.
+The default dataset covers `META`, `AMZN`, `AAPL`, `NFLX`, and `GOOG`. For each
+ticker it selects the latest unamended 10-K, latest unamended 10-Q, and exactly
+one latest unamended 8-K whose filing date is no later than **2026-07-14**.
+`--num-8k` changes only the requested 8-K count and must be at least one.
 
-The default dataset covers five large technology/media companies: `META`,
-`AMZN`, `AAPL`, `NFLX`, and `GOOG`. The scripts can still run for one company
-through `--ticker` or for a custom list through `--tickers`.
+SEC EDGAR is the authoritative source. EdgarTools supplies company lookup,
+metadata, documents, caching, and SEC-compatible rate limiting. Downloads need
+`SEC_IDENTITY="Name email@example.com"` in the root `.env` or shell.
 
-The pipeline collects:
-
-- the most recent unamended Form 10-K;
-- the most recent unamended Form 10-Q; and
-- a configurable number of recent unamended Form 8-K filings (five by default).
-
-SEC EDGAR is the authoritative source for these primary disclosure documents.
-The open-source `edgartools` package handles company lookup, filing metadata,
-SEC URLs, document retrieval, and SEC-compatible rate limiting.
-
-## Setup
-
-Use Python 3.11 or newer in a virtual environment:
+## Commands
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-```
-
-SEC automated access requires an identity containing a real name and contact
-email. Copy the example file and edit the untracked copy:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-```text
-SEC_IDENTITY="Your Name your.email@example.com"
-```
-
-The code also accepts the standard `EDGAR_IDENTITY` environment variable as a
-fallback. The identity is passed to `edgartools`, is never printed, and must not
-be committed. The library's default rate limit remains in effect.
-
-## Build the Dataset
-
-Run the complete default FAANG pipeline:
-
-```powershell
+# Default five-ticker build plus combined FAANG outputs.
 python -m src.data.build_dataset
+
+# One ticker only.
+python -m src.data.build_dataset --ticker AMZN
+
+# Explicit set.
+python -m src.data.build_dataset --tickers META AMZN
 ```
 
-The included PowerShell wrapper runs the same default dataset:
+Defaults are a 400-word maximum chunk size and 75-word within-section overlap.
+Validation rejects nonpositive chunk sizes, negative overlap, overlap greater
+than or equal to chunk size, duplicate tickers, and `--num-8k` below one.
+
+Individual stages remain available:
 
 ```powershell
-.\scripts\build_faang_dataset.ps1
-```
-
-Run one company only:
-
-```powershell
-python -m src.data.build_dataset --ticker AMZN --num-8k 5 --chunk-size 400 --chunk-overlap 75
-```
-
-Run an explicit custom list:
-
-```powershell
-python -m src.data.build_dataset --tickers META AMZN AAPL NFLX GOOG
-```
-
-Each stage can also run independently:
-
-```powershell
-python -m src.data.download_filings --ticker AMZN --num-8k 5
+python -m src.data.download_filings --ticker AMZN
 python -m src.data.clean_filings --ticker AMZN
 python -m src.data.chunk_filings --ticker AMZN --chunk-size 400 --chunk-overlap 75
 ```
 
-The cleaning and chunking stages read their preceding manifest rather than
-scanning directories. As a result, stale files from an older run cannot enter a
-new dataset silently.
+The complete ticker build is transactional. It performs download, cleaning,
+chunking, summary generation, and validation under `.cache/dataset_builds/`.
+Only after all checks pass are the exact ticker directories and summary files
+swapped into place. Commit failures roll back to the prior artifacts. A
+successful replacement removes obsolete files from that ticker's scoped
+generated locations, including superseded indexes.
+The evaluation preflight also applies manifest-scoped pruning to compatible
+cached ticker datasets, so unreferenced files do not accumulate between builds.
 
-Argument rules:
+Independent cleaning and chunking commands are manifest-driven but are not a
+complete transactional ticker rebuild.
 
-- `--num-8k` must be at least 1.
-- `--chunk-size` must be at least 1.
-- `--chunk-overlap` must be non-negative and smaller than the chunk size.
+## Generated artifacts
 
-## Generated Files
-
-For each ticker, a successful run creates:
+For ticker `AMZN`:
 
 ```text
-data/
-  raw/amzn/
-    filing_metadata.json
-    <filing-date>_<form>_<accession>.html
-  raw/.edgar_cache/
-  human_readable/amzn/
-    <filing-date>_<form>_<accession>.md
-  processed/amzn/
-    cleaning_manifest.json
-    cleaned_filings/
-      <filing-date>_<form>_<accession>.txt
-    amzn_filing_chunks.csv
-    amzn_filing_chunks.jsonl
+data/raw/amzn/
+  filing_metadata.json
+  <date>_<form>_<accession>.<html|txt>
+data/human_readable/amzn/
+  <date>_<form>_<accession>.<md|txt>
+data/processed/amzn/
+  cleaning_manifest.json
+  cleaned_filings/*.txt
+  amzn_filing_chunks.csv
+  amzn_filing_chunks.jsonl
+  index_chunks.pkl
+  embeddings.faiss                 # when FAISS is requested
+  faiss_index_manifest.json        # when FAISS is requested
+  bm25_index.pkl                   # when BM25 is requested
+  bm25_index_manifest.json         # when BM25 is requested
 outputs/data_summary/
   amzn_filing_inventory.csv
   amzn_cleaning_summary.csv
   amzn_dataset_summary.json
 ```
 
-The default multi-company run also creates:
+The default multi-ticker data build additionally writes combined FAANG chunks
+and aggregate filing, cleaning, missingness, outlier, section, and descriptive
+reports under `data/processed/faang/` and `outputs/data_summary/`.
 
-```text
-data/processed/faang/
-  faang_filing_chunks.csv
-  faang_filing_chunks.jsonl
-outputs/data_summary/
-  faang_dataset_summary.json
-  faang_filing_inventory.csv
-  faang_cleaning_summary.csv
-  faang_chunk_summary_by_ticker_form.csv
-  faang_missingness_summary.csv
-  faang_outlier_summary.csv
-  faang_section_summary.csv
-  faang_data_description.md
-```
+The RAG evaluation runner does not need or create the combined FAANG chunks. It
+retrieves within one company's index for each question. Combined outputs are
+for aggregate analysis and communication.
 
-HTML is preferred as the raw format because it preserves more of the source
-document structure. If a filing has no usable HTML, the downloader stores the
-plain text returned by `edgartools`. The library's internal response cache is
-kept below ignored `data/raw/.edgar_cache/` by default rather than in a user's
-home directory.
-
-Human-readable filing copies are saved under `data/human_readable/`. Markdown
-is preferred using EdgarTools' native filing Markdown renderer. If Markdown
-rendering is unavailable for a filing, the pipeline falls back to a plain-text
-human-readable file and records a warning in the filing manifest.
-
-`data/raw/`, `data/processed/`, and `data/human_readable/` are ignored by Git.
-SEC documents can be large, are reproducible from their accession numbers, and
-may change the size of the repository substantially. The lightweight summary
-files contain metadata and counts rather than filing text, so they may be
-retained for inspection or a course presentation.
-
-## Metadata
+## Data contracts
 
 ### Filing manifest
 
-`filing_metadata.json` contains one object per selected filing:
-
-| Field | Meaning |
-| --- | --- |
-| `company` | SEC filer name |
-| `ticker` | Normalized ticker |
-| `cik` | Zero-padded SEC Central Index Key when available |
-| `filing_type` | Exact form type: `10-K`, `10-Q`, or `8-K` |
-| `filing_date` | SEC filing date |
-| `accession_number` | Unique SEC accession number |
-| `source_url` | SEC URL for the primary filing document |
-| `local_raw_path` | Project-relative raw file path |
-| `raw_format` | `html` or fallback `text` |
-| `local_markdown_path` | Project-relative human-readable file path |
-| `human_readable_format` | `markdown` or fallback `text` |
-| `human_readable_warning` | Human-readable conversion warning, if any |
-
-The cleaning manifest carries these fields forward and adds the cleaned file
-path, raw and cleaned character lengths, and a list of warnings.
-
-### Chunk dataset
-
-Both chunk formats contain the same rows:
+`filing_metadata.json` has one object per selected filing:
 
 | Field | Meaning |
 | --- | --- |
 | `company`, `ticker`, `cik` | Filing entity identifiers |
-| `filing_type`, `filing_date` | Filing classification and date |
-| `accession_number` | Filing-level stable identifier |
-| `source_url` | Original SEC filing URL |
-| `source_file` | Project-relative cleaned source file |
-| `chunk_id` | Deterministic ticker/accession/index identifier |
-| `chunk_index` | Zero-based index within the filing |
-| `section_heading` | Most recently detected heading, or `unknown` |
-| `text` | Chunk text |
-| `word_count` | Whitespace-delimited word count |
+| `filing_type`, `filing_date` | SEC form and frozen-policy date |
+| `accession_number` | Unique SEC filing identifier |
+| `source_url` | SEC primary-document URL |
+| `local_raw_path`, `raw_format` | Project-relative raw file and `html`/`text` format |
+| `local_markdown_path`, `human_readable_format` | Readable copy and format |
+| `human_readable_warning` | Markdown fallback warning, if any |
 
-Chunks do not cross detected section boundaries. Overlap applies only between
-adjacent chunks in the same section.
+The cleaning manifest carries these fields forward and adds
+`local_cleaned_path`, raw/cleaned character lengths, and warnings.
 
-### Data description
+### Chunk rows
 
-`faang_data_description.md` summarizes the generated dataset in readable form:
-filing counts, filing dates, character counts, retained-text ratios, chunk
-statistics, section-heading coverage, missing metadata counts, and outlier
-checks. Missing text is not imputed. Unknown section headings remain `unknown`.
-Short chunks and low retention ratios are flagged, not dropped.
+CSV and JSONL contain identical ordered rows:
 
-## Regeneration
+| Field | Meaning |
+| --- | --- |
+| `company`, `ticker`, `cik` | Entity metadata |
+| `filing_type`, `filing_date`, `accession_number` | Source document identity |
+| `source_url`, `source_file` | SEC URL and cleaned local source |
+| `chunk_id` | Deterministic ticker/accession/index ID |
+| `chunk_index` | Zero-based position within the filing |
+| `section_heading` | Detected heading or `unknown` |
+| `text`, `word_count` | Retrieval text and size |
 
-To regenerate from current SEC EDGAR data:
+Chunks never cross detected section boundaries. Overlap occurs only between
+adjacent chunks in the same section. Blank text, duplicate/missing chunk IDs,
+unexpected filing counts, dates after the cutoff, and chunks exceeding the
+configured size fail staged validation.
 
-1. Install the requirements.
-2. Configure `.env` with a valid SEC identity.
-3. Run the complete build command.
+### Summary freshness
 
-The downloader selects filings dynamically, so dates and accession numbers may
-change when a company files a newer report. Existing generated files are
-overwritten when their names match; current manifests determine which files are
-used by later stages.
+Each ticker summary records the chunk CSV SHA-256 and row count. Evaluation
+refreshes missing or stale inventory, cleaning, and dataset summaries directly
+from current manifests and chunks without contacting EDGAR. This keeps
+presentation outputs synchronized with the database used for retrieval.
 
-## Current Limitations
+### Index freshness
 
-- HTML structures vary across filing years and companies.
-- Heading detection uses HTML heading tags and conservative SEC `Item`
-  patterns; some headings will remain `unknown`.
-- Tables are flattened into readable text and may remain noisy.
-- The cleaner intentionally retains uncertain or repetitive disclosure text
-  rather than risk deleting financial information.
-- The dataset covers only the latest selected filings, not a historical panel.
-- Recent 8-K filings may describe unrelated events and may rely on exhibits
-  that are not downloaded separately in this milestone.
+FAISS and BM25 have different index files because dense vector similarity and
+sparse token-ranking require different structures. They share one ordered chunk
+metadata snapshot. Each retriever manifest records the source CSV SHA-256, row
+count/order fingerprint, schema version, and retriever settings. FAISS also
+records the OpenAI embedding model and vector dimension. Loading rejects stale,
+tampered, or structurally inconsistent indexes; the evaluation runner rebuilds
+the requested index automatically.
+
+## Storage and limitations
+
+Raw, human-readable, processed, cache, and evaluation-result directories are
+ignored by Git. Lightweight summary metadata and charts may be retained for
+inspection. HTML is preferred; plain text is a fallback. Tables are flattened,
+heading detection is conservative, and uncertain disclosure text is retained
+rather than aggressively deleted. The dataset is a frozen latest-filing
+snapshot, not a historical panel, and separate exhibits are not downloaded.

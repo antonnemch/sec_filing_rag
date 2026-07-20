@@ -9,16 +9,24 @@ import shutil
 import unittest
 import uuid
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
-from src.data.build_dataset import combine_chunk_outputs, resolve_requested_tickers
+from src.data.build_dataset import (
+    _commit_staged_dataset,
+    combine_chunk_outputs,
+    prune_stale_dataset_artifacts,
+    resolve_requested_tickers,
+)
 from src.data.chunk_filings import chunk_cleaned_text, chunk_filings
 from src.data.clean_filings import clean_filings, clean_raw_content
 from src.data.describe_dataset import describe_dataset
-from src.data.download_filings import _extract_filing_content
-from src.data.download_filings import _extract_human_readable_content
+from src.config import DEFAULT_TICKERS, MAX_FILING_DATE
+from src.data.download_filings import (
+    _extract_filing_content,
+    _extract_human_readable_content,
+    _select_recent_filings,
+)
 from src.data.utils import (
-    DEFAULT_TICKERS,
     FilingRecord,
     configure_sec_identity,
     write_json,
@@ -59,6 +67,26 @@ class FakeFiling:
         if include_page_breaks and start_page_number == 1:
             return self._markdown
         return self._markdown
+
+
+class FilingSelectionTests(unittest.TestCase):
+    def test_selection_applies_fixed_maximum_filing_date(self) -> None:
+        selected = FakeFiling(html="<p>filing</p>", text="filing")
+        filtered = MagicMock()
+        filtered.empty = False
+        filtered.__len__.return_value = 1
+        filtered.latest.return_value = selected
+        filings = MagicMock()
+        filings.empty = False
+        filings.__len__.return_value = 2
+        filings.filter.return_value = filtered
+        company = MagicMock()
+        company.get_filings.return_value = filings
+
+        result = _select_recent_filings(company, "8-K", 1)
+
+        filings.filter.assert_called_once_with(date=f":{MAX_FILING_DATE.isoformat()}")
+        self.assertEqual(result, [selected])
 
 
 class CleaningTests(unittest.TestCase):
@@ -288,6 +316,33 @@ class ManifestPipelineTests(unittest.TestCase):
         self.assertEqual(len(csv_rows), len(jsonl_rows))
         self.assertEqual(len(jsonl_rows), len(rows))
 
+    def test_manifest_scoped_pruning_removes_only_stale_generated_files(self) -> None:
+        clean_filings("AMZN", project_root=self.project_root)
+        chunk_filings("AMZN", project_root=self.project_root)
+        processed = self.project_root / "data" / "processed" / "amzn"
+        (processed / "bm25_chunks.pkl").write_bytes(b"legacy")
+
+        removed = prune_stale_dataset_artifacts("AMZN", self.project_root)
+
+        self.assertGreaterEqual(removed, 2)
+        self.assertFalse((self.raw_directory / "stale.html").exists())
+        self.assertFalse((processed / "bm25_chunks.pkl").exists())
+        self.assertTrue(self.raw_path.exists())
+        self.assertTrue((processed / "amzn_filing_chunks.csv").exists())
+
+    def test_pruning_rejects_manifest_paths_outside_ticker_directory(self) -> None:
+        clean_filings("AMZN", project_root=self.project_root)
+        chunk_filings("AMZN", project_root=self.project_root)
+        manifest_path = self.raw_directory / "filing_metadata.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest[0]["local_raw_path"] = "data/raw/other/sample.html"
+        write_json(manifest_path, manifest)
+
+        with self.assertRaisesRegex(ValueError, "outside AMZN"):
+            prune_stale_dataset_artifacts("AMZN", self.project_root)
+
+        self.assertTrue((self.raw_directory / "stale.html").exists())
+
     def test_missing_raw_manifest_fails_clearly(self) -> None:
         empty_directory = self.project_root / "empty-raw"
         empty_directory.mkdir()
@@ -438,6 +493,83 @@ class AggregatePipelineTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn("oversized_chunks,1", outliers)
         self.assertIn("short_chunks_under_100_words,2", outliers)
+
+
+class TransactionalBuildTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.project_root = Path.cwd() / f".test-live-{uuid.uuid4().hex}"
+        self.staged_root = Path.cwd() / f".test-stage-{uuid.uuid4().hex}"
+        self.project_root.mkdir()
+        self.staged_root.mkdir()
+        self.relative_artifacts = [
+            Path("data/raw/test"),
+            Path("data/human_readable/test"),
+            Path("data/processed/test"),
+        ]
+        self.summary_artifacts = [
+            Path("outputs/data_summary/test_filing_inventory.csv"),
+            Path("outputs/data_summary/test_cleaning_summary.csv"),
+            Path("outputs/data_summary/test_dataset_summary.json"),
+        ]
+        for relative in self.relative_artifacts:
+            live = self.project_root / relative
+            staged = self.staged_root / relative
+            live.mkdir(parents=True)
+            staged.mkdir(parents=True)
+            (live / "marker.txt").write_text("old", encoding="utf-8")
+            (staged / "marker.txt").write_text("new", encoding="utf-8")
+        for relative in self.summary_artifacts:
+            live = self.project_root / relative
+            staged = self.staged_root / relative
+            live.parent.mkdir(parents=True, exist_ok=True)
+            staged.parent.mkdir(parents=True, exist_ok=True)
+            live.write_text("old", encoding="utf-8")
+            staged.write_text("new", encoding="utf-8")
+
+    def tearDown(self) -> None:
+        shutil.rmtree(self.project_root, ignore_errors=True)
+        shutil.rmtree(self.staged_root, ignore_errors=True)
+
+    def test_success_replaces_only_ticker_artifacts_and_prunes_stale_summary(self) -> None:
+        stale = self.project_root / "outputs/data_summary/test_obsolete.csv"
+        stale.write_text("stale", encoding="utf-8")
+
+        _commit_staged_dataset("TEST", self.staged_root, self.project_root)
+
+        for relative in self.relative_artifacts:
+            self.assertEqual(
+                (self.project_root / relative / "marker.txt").read_text(encoding="utf-8"),
+                "new",
+            )
+        self.assertFalse(stale.exists())
+
+    def test_failed_commit_restores_previous_artifacts(self) -> None:
+        real_replace = os.replace
+        failed = False
+
+        def fail_on_human_readable(source: object, destination: object) -> None:
+            nonlocal failed
+            source_path = Path(source)
+            destination_path = Path(destination)
+            if (
+                not failed
+                and "human_readable" in source_path.parts
+                and ".commit_backup" not in source_path.parts
+                and str(destination_path).startswith(str(self.project_root))
+            ):
+                failed = True
+                raise OSError("simulated commit failure")
+            real_replace(source, destination)
+
+        with patch("src.data.build_dataset.os.replace", side_effect=fail_on_human_readable):
+            with self.assertRaisesRegex(OSError, "simulated"):
+                _commit_staged_dataset("TEST", self.staged_root, self.project_root)
+
+        for relative in self.relative_artifacts:
+            self.assertEqual(
+                (self.project_root / relative / "marker.txt").read_text(encoding="utf-8"),
+                "old",
+            )
 
 
 if __name__ == "__main__":

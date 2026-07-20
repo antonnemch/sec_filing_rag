@@ -213,6 +213,7 @@ tempCodeRunnerFile.py
 /data/processed/
 /data/human_readable/
 /.test-data-*/
+/.test-*/
 
 # Generated eval outputs (large, contain LLM responses)
 /outputs/eval_results/

@@ -1,56 +1,43 @@
 {
   "ticker": "AAPL",
-  "generated_at_utc": "2026-07-15T00:26:11.140337+00:00",
-  "filings_downloaded": 7,
+  "generated_at_utc": "2026-07-20T21:26:01.972364+00:00",
+  "filings_as_of": "2026-07-14",
+  "filings_downloaded": 3,
   "filing_type_counts": {
     "10-K": 1,
     "10-Q": 1,
-    "8-K": 5
+    "8-K": 1
   },
   "filings": [
     {
       "filing_type": "10-K",
       "filing_date": "2025-10-31",
-      "accession_number": "0000320193-25-000079"
+      "accession_number": "0000320193-25-000079",
+      "human_readable_path": "data/human_readable/aapl/2025-10-31_10-K_000032019325000079.md"
     },
     {
       "filing_type": "10-Q",
       "filing_date": "2026-05-01",
-      "accession_number": "0000320193-26-000013"
+      "accession_number": "0000320193-26-000013",
+      "human_readable_path": "data/human_readable/aapl/2026-05-01_10-Q_000032019326000013.md"
     },
     {
       "filing_type": "8-K",
       "filing_date": "2026-04-30",
-      "accession_number": "0000320193-26-000011"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-04-20",
-      "accession_number": "0001140361-26-015711"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-02-24",
-      "accession_number": "0001140361-26-006577"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-01-29",
-      "accession_number": "0000320193-26-000005"
-    },
-    {
-      "filing_type": "8-K",
-      "filing_date": "2026-01-02",
-      "accession_number": "0001140361-26-000199"
+      "accession_number": "0000320193-26-000011",
+      "human_readable_path": "data/human_readable/aapl/2026-04-30_8-K_000032019326000011.md"
     }
   ],
-  "cleaned_files": 7,
-  "total_chunks": 171,
-  "average_words_per_chunk": 333.08,
+  "cleaned_files": 3,
+  "human_readable_files": 3,
+  "total_chunks": 161,
+  "average_words_per_chunk": 336.26,
   "chunk_size": 400,
   "chunk_overlap": 75,
+  "chunks_sha256": "2837bffd151aced50669b50e0dab622d7202b87661d3776f23b821d0a9ff4a0e",
   "output_paths": {
     "raw_manifest": "data/raw/aapl/filing_metadata.json",
+    "human_readable_dir": "data/human_readable/aapl",
     "cleaning_manifest": "data/processed/aapl/cleaning_manifest.json",
     "chunks_csv": "data/processed/aapl/aapl_filing_chunks.csv",
     "chunks_jsonl": "data/processed/aapl/aapl_filing_chunks.jsonl",
