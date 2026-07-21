@@ -38,8 +38,8 @@ class EvalSelectionTests(unittest.TestCase):
 
         self.assertEqual(selected["qa_id"].tolist(), ["Q1"])
 
-    def test_default_eval_set_is_milestone_dataset(self) -> None:
-        explicit = load_eval_set(Path("eval_sets/faang_eval_set_milestone.csv"))
+    def test_default_eval_set_is_complete_dataset(self) -> None:
+        explicit = load_eval_set(Path("eval_sets/faang_eval_set_complete.csv"))
 
         self.assertEqual(load_eval_set()["qa_id"].tolist(), explicit["qa_id"].tolist())
 

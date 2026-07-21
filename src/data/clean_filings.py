@@ -28,9 +28,44 @@ _PAGE_ARTIFACT = re.compile(
     r"^(?:page\s+\d+(?:\s+of\s+\d+)?|\d+\s+of\s+\d+)$", re.IGNORECASE
 )
 _ITEM_HEADING = re.compile(
-    r"^item\s+(?:\d+[a-z]?|[ivx]+)(?:\.\d+)?[.:]?\s+\S.*$",
+    r"^item\s+"
+    r"(?P<number>(?:\d+[a-z]?|[ivx]+)(?:\s*\.\s*\d+[a-z]?)?)"
+    r"\s*[.:]?\s*(?P<title>\S.*)?$",
     re.IGNORECASE,
 )
+_EIGHT_K_ITEM_TITLES = {
+    "1.01": "Entry into a Material Definitive Agreement",
+    "1.02": "Termination of a Material Definitive Agreement",
+    "1.03": "Bankruptcy or Receivership",
+    "1.04": "Material Cybersecurity Incidents",
+    "2.01": "Completion of Acquisition or Disposition of Assets",
+    "2.02": "Results of Operations and Financial Condition",
+    "2.03": "Creation of a Direct Financial Obligation",
+    "2.04": "Triggering Events That Accelerate or Increase a Direct Financial Obligation",
+    "2.05": "Costs Associated with Exit or Disposal Activities",
+    "2.06": "Material Impairments",
+    "3.01": "Notice of Delisting or Failure to Satisfy a Continued Listing Rule",
+    "3.02": "Unregistered Sales of Equity Securities",
+    "3.03": "Material Modification to Rights of Security Holders",
+    "4.01": "Changes in Registrant's Certifying Accountant",
+    "4.02": "Non-Reliance on Previously Issued Financial Statements",
+    "5.01": "Changes in Control of Registrant",
+    "5.02": "Departure or Election of Directors or Certain Officers",
+    "5.03": "Amendments to Articles of Incorporation or Bylaws",
+    "5.04": "Temporary Suspension of Trading Under Registrant's Employee Benefit Plans",
+    "5.05": "Amendments to the Registrant's Code of Ethics",
+    "5.06": "Change in Shell Company Status",
+    "5.07": "Submission of Matters to a Vote of Security Holders",
+    "5.08": "Shareholder Director Nominations",
+    "6.01": "ABS Informational and Computational Material",
+    "6.02": "Change of Servicer or Trustee",
+    "6.03": "Change in Credit Enhancement or Other External Support",
+    "6.04": "Failure to Make a Required Distribution",
+    "6.05": "Securities Act Updating Disclosure",
+    "7.01": "Regulation FD Disclosure",
+    "8.01": "Other Events",
+    "9.01": "Financial Statements and Exhibits",
+}
 _BLOCK_TAGS = {
     "address",
     "article",
@@ -111,10 +146,21 @@ def _html_to_intermediate_text(raw_html: str) -> str:
     return soup.get_text(" ", strip=False)
 
 
-def _looks_like_heading(line: str) -> bool:
-    """Detect common SEC item headings without classifying long prose."""
+def _item_heading(line: str) -> tuple[str, str] | None:
+    """Return a stable item key and display heading for an SEC item line."""
 
-    return len(line) <= 200 and bool(_ITEM_HEADING.fullmatch(line))
+    match = _ITEM_HEADING.fullmatch(line)
+    if not match:
+        return None
+    number = re.sub(r"\s+", "", match.group("number")).upper()
+    item_label = line[: match.start("number")].strip()
+    title = _normalize_inline(match.group("title") or "").strip(" .:")
+    if not title:
+        title = _EIGHT_K_ITEM_TITLES.get(number, "")
+    display = f"{item_label} {number}"
+    if title:
+        display += f". {title}"
+    return number, display
 
 
 def _normalize_lines(value: str) -> str:
@@ -127,28 +173,82 @@ def _normalize_lines(value: str) -> str:
         .replace("\xa0", " ")
         .replace("\u200b", "")
     )
-    lines: list[str] = []
+    records: list[tuple[str, bool]] = []
     previous_blank = True
 
     for raw_line in value.splitlines():
         line = _normalize_inline(raw_line)
         if not line:
             if not previous_blank:
-                lines.append("")
+                records.append(("", False))
             previous_blank = True
             continue
         if _PAGE_ARTIFACT.fullmatch(line):
             continue
 
+        explicit_heading = False
         if line.startswith(_HEADING_SENTINEL):
             heading = _normalize_inline(line[len(_HEADING_SENTINEL) :])
-            line = f"{HEADING_PREFIX}{heading}" if heading else ""
-        elif _looks_like_heading(line):
-            line = f"{HEADING_PREFIX}{line}"
+            line = heading
+            explicit_heading = bool(heading)
 
         if line:
-            lines.append(line)
+            records.append((line, explicit_heading))
             previous_blank = False
+
+    item_candidates: dict[str, list[int]] = {}
+    normalized_items: dict[int, str] = {}
+    for index, (line, _) in enumerate(records):
+        parsed = _item_heading(line)
+        if parsed is None:
+            continue
+        key, display = parsed
+        item_candidates.setdefault(key, []).append(index)
+        normalized_items[index] = display
+
+    # SEC tables of contents commonly repeat the real item headings. Keeping
+    # only the final occurrence prevents navigation entries from becoming
+    # retrieval sections while preserving the substantive item boundary.
+    authoritative_items = {
+        positions[-1] for positions in item_candidates.values() if positions
+    }
+    suppressed_titles: set[int] = set()
+    for index in authoritative_items:
+        key, _ = _item_heading(records[index][0]) or ("", "")
+        expected_title = _EIGHT_K_ITEM_TITLES.get(key)
+        if not expected_title:
+            continue
+        original_match = _ITEM_HEADING.fullmatch(records[index][0])
+        if original_match and original_match.group("title"):
+            continue
+        for next_index in range(index + 1, len(records)):
+            candidate = records[next_index][0]
+            if not candidate:
+                continue
+            if candidate.strip(" .:").casefold() == expected_title.casefold():
+                suppressed_titles.add(next_index)
+            break
+
+    lines: list[str] = []
+    previous_blank = True
+    for index, (line, explicit_heading) in enumerate(records):
+        if index in suppressed_titles:
+            continue
+        if index in authoritative_items:
+            line = f"{HEADING_PREFIX}{normalized_items[index]}"
+        elif index in normalized_items:
+            # Earlier duplicate item headings are table-of-contents navigation.
+            continue
+        elif explicit_heading:
+            line = f"{HEADING_PREFIX}{line}"
+
+        if not line:
+            if not previous_blank:
+                lines.append("")
+            previous_blank = True
+            continue
+        lines.append(line)
+        previous_blank = False
 
     while lines and not lines[-1]:
         lines.pop()

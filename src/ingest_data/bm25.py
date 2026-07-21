@@ -16,6 +16,7 @@ from src.ingest_data.index_common import (
     load_chunk_rows,
     load_validated_index_metadata,
     prune_legacy_index_files,
+    select_ranked_indices,
     write_pickle_atomic,
     write_shared_chunks,
 )
@@ -78,13 +79,22 @@ def search_bm25(
     index: BM25Okapi,
     chunks: list[dict],
     k: int = DEFAULT_RETRIEVAL_K,
+    filing_types: tuple[str, ...] = (),
+    require_each_filing_type: bool = False,
 ) -> list[dict]:
     if k < 1:
         raise ValueError("k must be at least 1.")
     scores = index.get_scores(query.lower().split())
-    top_indices = sorted(range(len(scores)), key=lambda item: scores[item], reverse=True)[
-        : min(k, len(chunks))
-    ]
+    ranked_indices = sorted(
+        range(len(scores)), key=lambda item: scores[item], reverse=True
+    )
+    top_indices = select_ranked_indices(
+        ranked_indices,
+        chunks,
+        min(k, len(chunks)),
+        filing_types,
+        require_each_filing_type,
+    )
     return [
         {**chunks[index_position], "retrieval_score": float(scores[index_position])}
         for index_position in top_indices

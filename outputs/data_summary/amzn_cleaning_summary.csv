@@ -1,4 +1,4 @@
 ticker,filing_type,filing_date,accession_number,raw_length,cleaned_length,retained_ratio,warnings
-AMZN,10-K,2026-02-06,0001018724-26-000004,1968342,285226,0.1449,large_length_reduction; html_tables_flattened_to_text
-AMZN,10-Q,2026-04-30,0001018724-26-000014,1241244,179388,0.1445,large_length_reduction; html_tables_flattened_to_text
-AMZN,8-K,2026-07-09,0001104659-26-082293,63945,7192,0.1125,large_length_reduction; html_tables_flattened_to_text
+AMZN,10-K,2026-02-06,0001018724-26-000004,1968342,285042,0.1448,large_length_reduction; html_tables_flattened_to_text
+AMZN,10-Q,2026-04-30,0001018724-26-000014,1241244,179061,0.1443,large_length_reduction; html_tables_flattened_to_text
+AMZN,8-K,2026-07-09,0001104659-26-082293,63945,7119,0.1113,large_length_reduction; html_tables_flattened_to_text

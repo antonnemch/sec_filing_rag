@@ -1,6 +1,6 @@
 {
   "ticker": "AAPL",
-  "generated_at_utc": "2026-07-20T21:26:01.972364+00:00",
+  "generated_at_utc": "2026-07-21T03:29:12.023309+00:00",
   "filings_as_of": "2026-07-14",
   "filings_downloaded": 3,
   "filing_type_counts": {
@@ -30,11 +30,11 @@
   ],
   "cleaned_files": 3,
   "human_readable_files": 3,
-  "total_chunks": 161,
-  "average_words_per_chunk": 336.26,
+  "total_chunks": 158,
+  "average_words_per_chunk": 343.66,
   "chunk_size": 400,
   "chunk_overlap": 75,
-  "chunks_sha256": "2837bffd151aced50669b50e0dab622d7202b87661d3776f23b821d0a9ff4a0e",
+  "chunks_sha256": "270351a521466b179ad8db2ea9fbceaa228ea50ba05c9fc190391e3c1b1545bd",
   "output_paths": {
     "raw_manifest": "data/raw/aapl/filing_metadata.json",
     "human_readable_dir": "data/human_readable/aapl",

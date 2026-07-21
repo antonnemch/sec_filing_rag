@@ -1,6 +1,6 @@
 {
   "ticker": "META",
-  "generated_at_utc": "2026-07-20T21:26:01.931655+00:00",
+  "generated_at_utc": "2026-07-21T03:29:01.418821+00:00",
   "filings_as_of": "2026-07-14",
   "filings_downloaded": 3,
   "filing_type_counts": {
@@ -30,11 +30,11 @@
   ],
   "cleaned_files": 3,
   "human_readable_files": 3,
-  "total_chunks": 453,
-  "average_words_per_chunk": 381.69,
+  "total_chunks": 452,
+  "average_words_per_chunk": 382.56,
   "chunk_size": 400,
   "chunk_overlap": 75,
-  "chunks_sha256": "276334812164d182952b4a8174cb6dbc1c38af8afe4a7f25bfc25995137ad338",
+  "chunks_sha256": "002c4e6039cde86f50be435d7aaf1b08c3e413108f569be367b5a323dfb8029e",
   "output_paths": {
     "raw_manifest": "data/raw/meta/filing_metadata.json",
     "human_readable_dir": "data/human_readable/meta",

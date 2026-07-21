@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 
 import pandas as pd
 
 from src.config import (
+    CHUNK_SCHEMA_VERSION,
     DEFAULT_LLM_MODEL,
     DEFAULT_NUM_8K,
     DEFAULT_RETRIEVAL_K,
@@ -22,6 +24,7 @@ from src.data.build_dataset import (
 )
 from src.data.utils import (
     PROJECT_ROOT,
+    load_project_env,
     normalize_tickers,
     read_json,
     sha256_file,
@@ -36,6 +39,7 @@ from src.LLM_response.ground_truth import (
     load_eval_set,
     validate_source_doc_ids,
 )
+from src.evaluation.run_artifacts import new_run_name, output_for_run
 from src.visualizations import plot_evaluation_coverage, plot_filing_timeline
 
 
@@ -48,19 +52,28 @@ def _dataset_matches_filing_policy(chunks_csv: Path, num_8k: int) -> bool:
     """Return whether cached chunks obey the exact form counts and fixed cutoff."""
 
     try:
-        chunks = pd.read_csv(
+        all_chunks = pd.read_csv(
             chunks_csv,
-            usecols=["filing_type", "filing_date", "accession_number"],
-        ).drop_duplicates("accession_number")
-        dates = pd.to_datetime(chunks["filing_date"], errors="raise").dt.date
+            usecols=[
+                "chunk_schema_version",
+                "filing_type",
+                "filing_date",
+                "accession_number",
+            ],
+        )
+        documents = all_chunks.drop_duplicates("accession_number")
+        dates = pd.to_datetime(documents["filing_date"], errors="raise").dt.date
     except (FileNotFoundError, KeyError, TypeError, ValueError):
         return False
-    counts = chunks["filing_type"].value_counts().to_dict()
+    counts = documents["filing_type"].value_counts().to_dict()
     return (
         counts.get("10-K", 0) == 1
         and counts.get("10-Q", 0) == 1
         and counts.get("8-K", 0) == num_8k
         and bool((dates <= MAX_FILING_DATE).all())
+        and bool(
+            (all_chunks["chunk_schema_version"] == CHUNK_SCHEMA_VERSION).all()
+        )
     )
 
 
@@ -142,13 +155,33 @@ def ensure_indexes(
 
 
 def _positive_int(value: str) -> int:
-    parsed = int(value)
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise argparse.ArgumentTypeError("must be an integer of at least 1") from exc
     if parsed < 1:
         raise argparse.ArgumentTypeError("must be at least 1")
     return parsed
 
 
-def build_parser() -> argparse.ArgumentParser:
+def _retrieval_k_from_env() -> int:
+    """Return the environment-configured retrieval depth or the built-in default."""
+
+    raw_value = os.getenv("RAG_TOP_K")
+    if raw_value is None:
+        return DEFAULT_RETRIEVAL_K
+    try:
+        return _positive_int(raw_value)
+    except argparse.ArgumentTypeError as exc:
+        raise ValueError(
+            "RAG_TOP_K must be an integer of at least 1; "
+            f"received {raw_value!r}."
+        ) from exc
+
+
+def build_parser(default_retrieval_k: int | None = None) -> argparse.ArgumentParser:
+    if default_retrieval_k is None:
+        default_retrieval_k = _retrieval_k_from_env()
     parser = argparse.ArgumentParser(
         description="Run the FAANG SEC filing RAG evaluation.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -169,8 +202,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--k",
         type=_positive_int,
-        default=DEFAULT_RETRIEVAL_K,
-        help="Number of top-ranked chunks to retrieve.",
+        default=default_retrieval_k,
+        help=(
+            "Number of top-ranked chunks to retrieve; overrides RAG_TOP_K from "
+            "the shell or .env."
+        ),
     )
     parser.add_argument(
         "--model",
@@ -188,17 +224,29 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Fail instead of rebuilding an incompatible filing dataset.",
     )
-    parser.add_argument(
+    output_group = parser.add_mutually_exclusive_group()
+    output_group.add_argument(
         "--output",
         type=Path,
         default=None,
-        help="Final results CSV; checkpoint and manifest use this name as a prefix.",
+        help=(
+            "Custom final results CSV; checkpoint, manifest, and figures are kept "
+            "beside it."
+        ),
+    )
+    output_group.add_argument(
+        "--run-name",
+        default=None,
+        help=(
+            "Stable run directory name under outputs/eval_results/runs; required "
+            "to resume a default-layout run."
+        ),
     )
     parser.add_argument(
         "--eval-csv",
         type=Path,
         default=None,
-        help="Evaluation CSV; defaults to the milestone dataset.",
+        help="Evaluation CSV; defaults to the complete 60-question dataset.",
     )
     parser.add_argument(
         "--include-incomplete",
@@ -214,9 +262,42 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
-    parser = build_parser()
+    load_project_env(PROJECT_ROOT)
+    try:
+        parser = build_parser()
+    except ValueError as exc:
+        raise SystemExit(f"Error: {exc}") from None
     args = parser.parse_args()
     try:
+        if args.resume and args.output is None and args.run_name is None:
+            raise ValueError("--resume requires --run-name or --output to identify the run.")
+        output_csv = args.output or output_for_run(
+            PROJECT_ROOT, args.run_name or new_run_name()
+        )
+        figures_dir = output_csv.parent / "figures"
+        if args.output is None and not args.resume and output_csv.parent.exists():
+            raise FileExistsError(
+                f"Run directory already exists: {output_csv.parent}. Choose a new "
+                "--run-name or use --resume for the exact existing run."
+            )
+        if not args.resume:
+            checkpoint_path = output_csv.with_name(
+                output_csv.name + ".checkpoint.jsonl"
+            )
+            manifest_path = output_csv.with_name(output_csv.name + ".manifest.json")
+            conflicts = [
+                path
+                for path in (output_csv, checkpoint_path, manifest_path)
+                if path.exists()
+            ]
+            if figures_dir.exists():
+                conflicts.extend(path for path in figures_dir.iterdir())
+            if conflicts:
+                raise FileExistsError(
+                    "Refusing to overwrite existing run artifacts: "
+                    + ", ".join(str(path) for path in conflicts)
+                    + ". Use --resume for this exact run or choose a new run name/output."
+                )
         tickers = normalize_tickers(args.tickers)
         ensure_datasets(
             tickers,
@@ -236,18 +317,28 @@ def main() -> None:
         validate_source_doc_ids(selected_eval, PROJECT_ROOT)
         ensure_indexes(tickers, args.retriever, PROJECT_ROOT)
 
-        try:
-            plot_evaluation_coverage(
-                preflight_eval,
-                PROJECT_ROOT / "outputs" / "eval_results" / "evaluation_coverage.png",
-            )
-            plot_filing_timeline(
-                tickers,
-                PROJECT_ROOT / "outputs" / "data_summary" / "filing_timeline.png",
-                PROJECT_ROOT,
-            )
-        except Exception as exc:
-            print(f"Warning: visualization generation skipped: {exc}")
+        input_figures = (
+            (
+                "01_evaluation_coverage.png",
+                lambda: plot_evaluation_coverage(
+                    preflight_eval,
+                    figures_dir / "01_evaluation_coverage.png",
+                ),
+            ),
+            (
+                "02_filing_timeline.png",
+                lambda: plot_filing_timeline(
+                    tickers,
+                    figures_dir / "02_filing_timeline.png",
+                    PROJECT_ROOT,
+                ),
+            ),
+        )
+        for filename, build_figure in input_figures:
+            try:
+                build_figure()
+            except Exception as exc:
+                print(f"Warning: {filename} was not generated: {exc}")
 
         run_batch_eval(
             tickers=tickers,
@@ -257,10 +348,10 @@ def main() -> None:
             project_root=PROJECT_ROOT,
             eval_csv=args.eval_csv,
             include_incomplete=args.include_incomplete,
-            output_csv=args.output,
+            output_csv=output_csv,
             resume=args.resume,
         )
-    except (FileNotFoundError, RuntimeError, ValueError) as exc:
+    except (FileExistsError, FileNotFoundError, RuntimeError, ValueError) as exc:
         parser.exit(1, f"Error: {exc}\n")
 
 

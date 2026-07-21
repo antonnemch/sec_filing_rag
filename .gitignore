@@ -216,7 +216,20 @@ tempCodeRunnerFile.py
 /.test-*/
 
 # Generated eval outputs (large, contain LLM responses)
-/outputs/eval_results/
+# Ignore evaluation runs by default
+/outputs/eval_results/*
+
+# Allow selected run folders
+!/outputs/eval_results/runs/
+/outputs/eval_results/runs/*
+
+# Previous K=5 run
+!/outputs/eval_results/runs/20260721T015559_930605Z/
+!/outputs/eval_results/runs/20260721T015559_930605Z/**
+
+# K=3 comparison run
+!/outputs/eval_results/runs/comparison-k3/
+!/outputs/eval_results/runs/comparison-k3/**
 
 # macOS metadata
 .DS_Store

@@ -1,6 +1,6 @@
 {
   "ticker": "AMZN",
-  "generated_at_utc": "2026-07-20T21:26:01.954435+00:00",
+  "generated_at_utc": "2026-07-21T03:29:06.978740+00:00",
   "filings_as_of": "2026-07-14",
   "filings_downloaded": 3,
   "filing_type_counts": {
@@ -30,11 +30,11 @@
   ],
   "cleaned_files": 3,
   "human_readable_files": 3,
-  "total_chunks": 235,
-  "average_words_per_chunk": 366.93,
+  "total_chunks": 240,
+  "average_words_per_chunk": 359.53,
   "chunk_size": 400,
   "chunk_overlap": 75,
-  "chunks_sha256": "ddc70136ccf4f5b34b2781397ecbc708740bdb3cd2d5982b8e757c7b99aa2da7",
+  "chunks_sha256": "5d07291267dd32488768ad01dd65debb5e9f8de47cda5ccfe28b3061624affba",
   "output_paths": {
     "raw_manifest": "data/raw/amzn/filing_metadata.json",
     "human_readable_dir": "data/human_readable/amzn",

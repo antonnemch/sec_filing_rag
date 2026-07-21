@@ -6,16 +6,17 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.config import CATEGORY_LABELS
 from src.data.utils import PROJECT_ROOT, ticker_slug
 
 DEFAULT_EVAL_CSV = (
-    Path(__file__).resolve().parents[2] / "eval_sets" / "faang_eval_set_milestone.csv"
+    Path(__file__).resolve().parents[2] / "eval_sets" / "faang_eval_set_complete.csv"
 )
 REQUIRED_COLUMNS = {
     "qa_id", "question_id", "question", "answer", "ticker", "category",
     "answerable", "source_doc_id",
 }
-ALLOWED_CATEGORIES = {1, 2, 3, 4}
+ALLOWED_CATEGORIES = set(CATEGORY_LABELS)
 
 
 def load_eval_set(path: Path = DEFAULT_EVAL_CSV) -> pd.DataFrame:

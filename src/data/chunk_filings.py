@@ -9,6 +9,8 @@ from typing import Any
 
 import pandas as pd
 
+from src.config import CHUNK_SCHEMA_VERSION
+
 from .clean_filings import HEADING_PREFIX
 from .utils import (
     PROJECT_ROOT,
@@ -23,6 +25,7 @@ from .utils import (
 
 
 CHUNK_COLUMNS = [
+    "chunk_schema_version",
     "company",
     "ticker",
     "cik",
@@ -48,7 +51,9 @@ def split_sections(cleaned_text: str) -> list[tuple[str, str]]:
 
     def flush() -> None:
         body = "\n\n".join(line for line in body_lines if line).strip()
-        if body:
+        # Page numbers and table-navigation fragments must not become apparent
+        # substantive sections merely because they followed an item heading.
+        if body and re.search(r"[A-Za-z]{2,}", body):
             sections.append((current_heading, body))
 
     for raw_line in cleaned_text.splitlines():
@@ -157,6 +162,7 @@ def chunk_filings(
         ):
             rows.append(
                 {
+                    "chunk_schema_version": CHUNK_SCHEMA_VERSION,
                     "company": item["company"],
                     "ticker": item["ticker"],
                     "cik": str(item["cik"]),

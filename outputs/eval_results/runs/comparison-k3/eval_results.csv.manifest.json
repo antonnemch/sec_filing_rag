@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "tickers": [
+    "META",
+    "AMZN",
+    "AAPL",
+    "NFLX",
+    "GOOG"
+  ],
+  "retrievers": [
+    "faiss",
+    "bm25"
+  ],
+  "retrieval_k": 3,
+  "retrieval_policy_version": "filing-type-routing-v1",
+  "llm_model": "claude-sonnet-4-6",
+  "include_incomplete": false,
+  "eval_csv": "C:\\Users\\anton\\Documents\\VSCODE PROJECTS\\sec_filing_rag\\eval_sets\\faang_eval_set_complete.csv",
+  "eval_csv_sha256": "b3b49921f9c738e1b14eb21764d50e0b390c029f5f35cf90a0d5ebbed98aaf25",
+  "selected_rows_sha256": "d30d800498b0077fe13671dafe25e8d6f9135b0b8409e203634d91d98673dea3",
+  "system_prompt_sha256": "9553922969598d2731994d15c14557ef2696d62df80e1b3c1b3894db87d46c5c",
+  "indexes": {
+    "META:faiss": "66668b884fcba3ae83cbeb84558052a17493fa245b681a9bd62a005566b08634",
+    "META:bm25": "d1e714f55529c6bdd5b7f1cff330a9d871a77d29d0f1bca9440ba9daab6b7412",
+    "AMZN:faiss": "1ee1e0e3313e2e62deba76e71564cb636742226ca068d6862f69e75635f74bc6",
+    "AMZN:bm25": "f729fe3bb19465101fb8a5fb78edba2d970eb49104b1d31dd532477f8335bfb7",
+    "AAPL:faiss": "2bcb5cda7ff9cf0c2a18390a0ac80ea9e03b950d351476ef7c7f618bc36eeb00",
+    "AAPL:bm25": "13358c465a2d369b9f6ff66df7ee913b8f5dd24d4003c4e0f10510282482eb05",
+    "NFLX:faiss": "10ca346ce2d850425b5ae459c5bef1d01ac287a2eeb3f67a7b241240fb82e0ab",
+    "NFLX:bm25": "ffc44f81eec2e00006416f46e7724d90fc40591b3f8ec099ea389e0cb215d0bc",
+    "GOOG:faiss": "d2553f7bccc5c910ff5ebd0569c6f92f266e9290a28dd91b8c868e1453471bf7",
+    "GOOG:bm25": "204b5604f87baefcd068a44c83b6d36e0eb372f518987457d4967ceb4d8a42b5"
+  },
+  "run_fingerprint": "fce7d189dc764be4641b25d6ae5a5c0f78136ece36ccb430b78df86f05a47e25",
+  "created_at_utc": "2026-07-21T03:29:45.297661+00:00"
+}

@@ -133,6 +133,31 @@ class CleaningTests(unittest.TestCase):
             "## ITEM 1A. RISK FACTORS\nMaterial risks are described here.",
         )
 
+    def test_repeated_toc_item_is_demoted_and_split_8k_heading_is_normalized(self) -> None:
+        raw = (
+            "ITEM 8.01. OTHER EVENTS.\n3\n"
+            "ITEM 9.01. FINANCIAL STATEMENTS AND EXHIBITS.\n4\n"
+            "Table of Contents\nITEM 8 . 01 .\nOTHER EVENTS.\n"
+            "On July 9, 2026, the company closed its senior notes offering.\n"
+            "ITEM 9.01.\nFINANCIAL STATEMENTS AND EXHIBITS.\n"
+            "The underwriting agreement is filed as Exhibit 1.1."
+        )
+
+        cleaned, _ = clean_raw_content(raw, "text")
+        heading_lines = [line for line in cleaned.splitlines() if line.startswith("## ")]
+
+        self.assertEqual(
+            heading_lines,
+            [
+                "## ITEM 8.01. Other Events",
+                "## ITEM 9.01. Financial Statements and Exhibits",
+            ],
+        )
+        chunks = chunk_cleaned_text(cleaned)
+        event_chunk = next(chunk for chunk in chunks if chunk[0].endswith("Other Events"))
+        self.assertIn("closed its senior notes offering", event_chunk[1])
+        self.assertNotEqual(event_chunk[1], "3")
+
     def test_unsupported_raw_format_fails(self) -> None:
         with self.assertRaisesRegex(ValueError, "Unsupported"):
             clean_raw_content("content", "pdf")
@@ -208,6 +233,17 @@ class ChunkingTests(unittest.TestCase):
         )
 
         self.assertEqual(chunks[0], ("unknown", "alpha beta", 2))
+
+    def test_page_number_only_section_is_not_chunked(self) -> None:
+        chunks = chunk_cleaned_text(
+            "## Item 8.01. Other Events\n3\n"
+            "## Item 9.01. Financial Statements and Exhibits\nExhibit list"
+        )
+
+        self.assertEqual(
+            chunks,
+            [("Item 9.01. Financial Statements and Exhibits", "Exhibit list", 2)],
+        )
 
     def test_invalid_chunk_settings_fail(self) -> None:
         for chunk_size, overlap in ((0, 0), (4, -1), (4, 4), (4, 5)):

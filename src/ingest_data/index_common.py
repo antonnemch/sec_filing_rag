@@ -30,6 +30,50 @@ class IndexValidationError(RuntimeError):
     """Raised when an index exists but no longer matches its source chunks."""
 
 
+def select_ranked_indices(
+    ranked_indices: list[int],
+    chunks: list[dict[str, Any]],
+    k: int,
+    filing_types: tuple[str, ...] = (),
+    require_each_filing_type: bool = False,
+) -> list[int]:
+    """Filter ranked chunks by form and optionally reserve one slot per form."""
+
+    if k < 1:
+        raise ValueError("k must be at least 1.")
+    normalized_types = tuple(
+        dict.fromkeys(value.strip().upper() for value in filing_types if value.strip())
+    )
+    allowed = set(normalized_types)
+    eligible = [
+        index
+        for index in ranked_indices
+        if not allowed
+        or str(chunks[index].get("filing_type", "")).strip().upper() in allowed
+    ]
+    if not require_each_filing_type or len(normalized_types) < 2:
+        return eligible[:k]
+
+    selected: set[int] = set()
+    for filing_type in normalized_types:
+        match = next(
+            (
+                index
+                for index in eligible
+                if str(chunks[index].get("filing_type", "")).strip().upper()
+                == filing_type
+            ),
+            None,
+        )
+        if match is not None and len(selected) < k:
+            selected.add(match)
+    for index in eligible:
+        if len(selected) >= k:
+            break
+        selected.add(index)
+    return [index for index in eligible if index in selected]
+
+
 def index_dir(ticker: str, project_root: Path = PROJECT_ROOT) -> Path:
     return project_root / "data" / "processed" / ticker_slug(ticker)
 

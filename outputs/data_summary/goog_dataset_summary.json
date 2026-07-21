@@ -1,6 +1,6 @@
 {
   "ticker": "GOOG",
-  "generated_at_utc": "2026-07-20T21:26:02.010559+00:00",
+  "generated_at_utc": "2026-07-21T03:29:25.719151+00:00",
   "filings_as_of": "2026-07-14",
   "filings_downloaded": 3,
   "filing_type_counts": {
@@ -30,11 +30,11 @@
   ],
   "cleaned_files": 3,
   "human_readable_files": 3,
-  "total_chunks": 258,
-  "average_words_per_chunk": 367.38,
+  "total_chunks": 259,
+  "average_words_per_chunk": 365.64,
   "chunk_size": 400,
   "chunk_overlap": 75,
-  "chunks_sha256": "e5ba80bfeef0cade9e660916ecd0a04fd958b0d1af8f51d01497aac2da8084eb",
+  "chunks_sha256": "2cb0f2817786232d3fa3a35ab1bee0f827232ce0bf714b4eb2225733bef7510a",
   "output_paths": {
     "raw_manifest": "data/raw/goog/filing_metadata.json",
     "human_readable_dir": "data/human_readable/goog",

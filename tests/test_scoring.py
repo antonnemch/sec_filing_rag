@@ -8,7 +8,7 @@ from unittest.mock import patch
 import pandas as pd
 
 from src.config import EVALUATION_SCHEMA_VERSION
-from src.run_tests.score_eval import (
+from src.evaluation.score_eval import (
     _parse_judge_score,
     _retrieval_scores,
     _word_f1,
@@ -117,7 +117,7 @@ class RetrievalScoringTests(unittest.TestCase):
             generation_status="not_run",
             status="retrieval_error",
         )
-        with patch("src.run_tests.score_eval._embed") as embed:
+        with patch("src.evaluation.score_eval._embed") as embed:
             scored = score(pd.DataFrame([result]), use_embeddings=True)
 
         embed.assert_not_called()

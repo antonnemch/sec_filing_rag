@@ -29,6 +29,9 @@ Configure the root `.env`:
 SEC_IDENTITY="Your Name your.email@example.com"
 OPENAI_API_KEY="sk-..."
 ANTHROPIC_API_KEY="sk-ant-..."
+
+# Optional; number of chunks retrieved for each question.
+RAG_TOP_K=5
 ```
 
 Every entry point loads this shared file without overriding variables already
@@ -39,6 +42,7 @@ present in the shell. The keys are required only under these conditions:
 | `SEC_IDENTITY` | SEC EDGAR downloads through EdgarTools | compatible filing datasets already exist and `--skip-build` is used |
 | `OPENAI_API_KEY` | chunk/query embeddings for FAISS; answer/reference embeddings during default scoring | using BM25 and scoring with `--no-embeddings` |
 | `ANTHROPIC_API_KEY` | Claude answer generation; optional `--llm-judge` | only building data/indexes or running non-LLM scoring |
+| `RAG_TOP_K` | Default number of chunks retrieved per evaluation question | omitted to use the built-in default of `5`; `--k` overrides it |
 
 OpenAI and Anthropic clients use a 60-second timeout and up to three SDK
 retries. API calls can incur usage charges. Keep `.env` private; it is ignored
@@ -74,7 +78,7 @@ evaluation, without contacting EDGAR.
 
 Running `src.data.build_dataset` without ticker flags also creates a combined
 `data/processed/faang/` chunk dataset and aggregate descriptive reports.
-`src.run_tests.run_eval`, by contrast, validates or builds each requested ticker
+`src.evaluation.run_eval`, by contrast, validates or builds each requested ticker
 independently and does not build the combined dataset. Evaluation retrieval is
 ticker-scoped, so the combined dataset is unnecessary for RAG correctness; it
 exists for aggregate inspection and reporting.
@@ -84,22 +88,27 @@ See [DATAREADME.md](DATAREADME.md) for schemas and generated data details.
 ## Retrieval and evaluation
 
 ```powershell
-# Default: milestone questions, completed answers only, FAISS, k=5.
-python -m src.run_tests.run_eval --skip-build
+# Default: complete 60-question set, FAISS, k=5, new timestamped run directory.
+python -m src.evaluation.run_eval --skip-build
 
-# Recommended comparison run.
-python -m src.run_tests.run_eval --retriever both --skip-build
+# Recommended named comparison run (easy to score or resume later).
+python -m src.evaluation.run_eval --retriever both --skip-build --run-name baseline-k5
 
 # BM25 avoids OpenAI embedding calls during retrieval.
-python -m src.run_tests.run_eval --retriever bm25 --skip-build
+python -m src.evaluation.run_eval --retriever bm25 --skip-build
 ```
 
-The default evaluation file is
-`eval_sets/faang_eval_set_milestone.csv`. It contains the planned 60 questions,
-but only rows with nonblank reference answers are run by default. This prevents
-unfinished questions from silently entering scored results. Use
-`--include-incomplete` to retrieve and generate for all selected rows; answer
-metrics remain unavailable when the reference answer is blank.
+Retrieval depth uses this precedence: an explicit `--k` argument, then
+`RAG_TOP_K` from the shell or root `.env`, then the built-in default of `5`.
+For example, `RAG_TOP_K=10` changes the default for subsequent runs, while
+`python -m src.evaluation.run_eval --k 3` still retrieves three chunks for that
+run. Both values must be integers of at least `1`.
+
+The default evaluation file is `eval_sets/faang_eval_set_complete.csv`. It
+contains 60 questions with completed reference answers, so a default run selects
+all 60. The completed-answer filter remains active for custom evaluation files;
+use `--include-incomplete` when a custom file intentionally contains blank
+references, in which case answer metrics for those rows remain unavailable.
 
 The runner validates every exact `source_doc_id` against the ticker's chunk
 database before API calls. Multi-filing questions use a marker such as
@@ -125,6 +134,21 @@ SHA-256, row order, and embedding model/dimension where applicable. Missing,
 stale, or corrupt requested indexes are rebuilt automatically. FAISS and BM25
 share one chunk metadata snapshot instead of duplicating it.
 
+Retrieval also uses filing metadata. If a question explicitly names a 10-K,
+10-Q, or 8-K, candidates are restricted to the named form or forms. Comparison
+questions reserve context for every named form. BM25 applies these values only
+as filters; they are not repeated in its indexed text. FAISS embeds each chunk
+together with its company, ticker, filing type, filing date, and normalized SEC
+section heading so semantic search can distinguish a filing cover page from a
+substantive item disclosure.
+
+The cleaner recognizes split 8-K headings such as `Item 5.07.` followed by its
+title, demotes repeated table-of-contents item headings, and omits page-number-
+only sections. Chunk schema and dense-document format versions make datasets
+and FAISS indexes built before this metadata repair stale. Run the normal
+pipeline without `--skip-build` once to transactionally rebuild them; subsequent
+runs reuse the validated artifacts.
+
 ### Prompt and citations
 
 Claude receives only the retrieved chunk text plus a system prompt that tells
@@ -142,11 +166,19 @@ compute a separate groundedness or faithfulness score.
 
 ### Checkpoint and resume behavior
 
-The default output is `outputs/eval_results/eval_results.csv`. Each attempted
-`(qa_id, retriever)` record is flushed immediately to:
+Every fresh evaluation is isolated under
+`outputs/eval_results/runs/<run-name>/`. Without `--run-name`, the runner creates
+a unique UTC timestamp such as `20260720T190504_123456Z`. A run contains:
 
+- `eval_results.csv` - materialized results;
 - `eval_results.csv.checkpoint.jsonl` - durable last-write-wins records;
-- `eval_results.csv.manifest.json` - run configuration and fingerprints.
+- `eval_results.csv.manifest.json` - run configuration and fingerprints;
+- `eval_results_scored.csv` - metrics created by the scorer;
+- `figures/` - that run's input, coverage, and performance charts.
+
+Fresh runs refuse to overwrite an existing result, checkpoint, manifest, or
+named run directory. A custom `--output` remains available; its checkpoint,
+manifest, scored output, and figures are stored beside that CSV.
 
 The final CSV is replaced atomically from the checkpoint. Retrieval and answer
 generation have separate statuses and errors, so retrieved evidence is retained
@@ -154,30 +186,38 @@ when Claude fails. If a process is interrupted, already completed records are
 also materialized to the CSV.
 
 ```powershell
-python -m src.run_tests.run_eval --retriever both --skip-build --resume
+python -m src.evaluation.run_eval --retriever both --skip-build --run-name baseline-k5 --resume
 ```
 
 `--resume` continues only an exact match of the evaluation CSV and selected
 rows, prompt, model, `k`, retrievers, chunk data, and index fingerprints. It
 skips successful rows and retries missing or failed rows. A mismatch stops with
 an instruction to start a fresh run or use a different output path; incompatible
-runs are never appended together.
+runs are never appended together. Because an automatically generated timestamp
+cannot identify an earlier run, `--resume` requires either `--run-name` or
+`--output`.
 
-Legacy result files and indexes are intentionally unsupported after this
-clean-break migration. Rerun evaluation/index construction to recreate them.
+Legacy result schemas and index formats remain intentionally unsupported after
+the clean-break migration. Rebuild those artifacts with the current pipeline.
 
 ## Scoring
 
 ```powershell
-# Retrieval metrics + word overlap + OpenAI semantic similarity.
-python -m src.run_tests.score_eval
+# Score the named run used above.
+python -m src.evaluation.score_eval --run-name baseline-k5
 
-# Fully local scoring.
-python -m src.run_tests.score_eval --no-embeddings
+# With no input option, score the newest run.
+python -m src.evaluation.score_eval
 
-# Add optional Claude 1-5 factual-alignment judging.
-python -m src.run_tests.score_eval --llm-judge
+# Fully local scoring or optional Claude judging.
+python -m src.evaluation.score_eval --run-name baseline-k5 --no-embeddings
+python -m src.evaluation.score_eval --run-name baseline-k5 --llm-judge
 ```
+
+Scoring also refuses to replace an existing scored CSV or performance figure.
+Use `--overwrite` only when intentionally rescoring the same run, or provide an
+`--output` in another directory to isolate a different scoring variant and its
+figures.
 
 The scorer validates the v2 result schema and single run fingerprint. It keeps
 all rows, including failures, and reports metric denominators plus retrieval and
@@ -201,25 +241,38 @@ Unavailable gold labels, failed stages, and incomplete references produce blank
 metric cells rather than fabricated zeros. LLM judge failures are recorded per
 row instead of aborting the entire scoring run.
 
-Charts are generated when enough data is available:
+Charts are written to the selected run's `figures/` directory. Input/run charts
+are created during evaluation, and performance charts are created during scoring.
+A chart is skipped cleanly when its required metric or pairing is unavailable:
 
-- `evaluation_coverage.png`;
-- `filing_timeline.png`;
-- `retriever_comparison.png` (includes stage success rates);
-- `per_question_delta.png` for paired FAISS/BM25 runs.
+- `01_evaluation_coverage.png`: completed, incomplete, and multi-document QA rows;
+- `02_filing_timeline.png`: selected 10-K, 10-Q, and 8-K filings against the cutoff;
+- `03_overall_retriever_metrics.png`: every available metric by retriever;
+- `04_metric_availability_and_outcomes.png`: eligible denominators and failure counts;
+- `05_category_performance.png`: every available metric by category and retriever;
+- `06_category_retriever_deltas.png`: paired FAISS-minus-BM25 category differences;
+- `07_ticker_performance.png`: every available metric by company and retriever;
+- `08_answerability_performance.png`: performance on answerable/unanswerable rows;
+- `09_metric_distributions.png`: row-level score distributions by retriever;
+- `10_per_question_deltas.png`: paired FAISS-minus-BM25 question differences;
+- `11_metric_correlations.png`: within-retriever agreement between metrics.
 
 ## Project structure
 
 ```text
 eval_sets/
-  faang_eval_set_milestone.csv
+  faang_eval_set_complete.csv       default 60-question evaluation set
+  faang_eval_set_milestone.csv      earlier milestone snapshot
 src/
   config.py
   data/                 download, clean, chunk, transactional build, reports
   ingest_data/          FAISS/BM25 builders and index manifests
   LLM_response/         retrieval, prompt, durable evaluation
-  run_tests/            evaluation and scoring CLIs
+  evaluation/           evaluation and scoring CLIs
 tests/                  offline unit and fault-injection tests
 data/                   generated filing and index artifacts
-outputs/                generated summaries, results, and charts
+outputs/                generated summaries and evaluation results
+  eval_results/runs/<run-name>/
+    eval_results.csv    isolated results, checkpoint, manifest, and scored CSV
+    figures/            figures belonging only to this run
 ```
