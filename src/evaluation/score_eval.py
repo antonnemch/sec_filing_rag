@@ -15,16 +15,17 @@ import pandas as pd
 from src.config import (
     API_MAX_RETRIES,
     API_TIMEOUT_SECONDS,
+    CATEGORY_LABELS,
     DEFAULT_EMBEDDING_MODEL,
     DEFAULT_JUDGE_MODEL,
     EVALUATION_SCHEMA_VERSION,
 )
 from src.data.utils import PROJECT_ROOT, atomic_write_text, load_project_env
 from src.LLM_response.LLM import _extract_text_content
-from src.visualizations import plot_per_question_delta, plot_retriever_comparison
+from src.evaluation.run_artifacts import newest_run_output, output_for_run
+from src.visualizations import generate_evaluation_figures
 
 
-_RESULTS_CSV = PROJECT_ROOT / "outputs" / "eval_results" / "eval_results.csv"
 _EMBED_BATCH_SIZE = 100
 _TOKEN_RE = re.compile(r"\b\w+(?:[.-]\w+)*\b", re.UNICODE)
 _JUDGE_SCORE_RE = re.compile(r"[1-5]\.?")
@@ -47,14 +48,6 @@ _REQUIRED_RESULT_COLUMNS = {
     "generation_status",
     "status",
 }
-
-CATEGORY_LABELS = {
-    1: "Business overview",
-    2: "Financial/ops",
-    3: "Risk",
-    4: "Recent developments",
-}
-
 
 def _text(value: object) -> str:
     return "" if pd.isna(value) else str(value).strip()
@@ -389,7 +382,18 @@ def build_parser() -> argparse.ArgumentParser:
         description="Score RAG evaluation results against ground truth.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--input", type=Path, default=_RESULTS_CSV)
+    input_group = parser.add_mutually_exclusive_group()
+    input_group.add_argument(
+        "--input",
+        type=Path,
+        default=None,
+        help="Results CSV to score; defaults to the newest isolated run.",
+    )
+    input_group.add_argument(
+        "--run-name",
+        default=None,
+        help="Run directory name under outputs/eval_results/runs.",
+    )
     parser.add_argument(
         "--output",
         type=Path,
@@ -406,6 +410,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Add optional Claude 1-5 factual-alignment scores.",
     )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Explicitly replace an existing scored CSV and performance figures.",
+    )
     return parser
 
 
@@ -413,25 +422,44 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
     try:
-        if not args.input.exists():
-            raise FileNotFoundError(f"Results file not found: {args.input}")
+        input_path = (
+            output_for_run(PROJECT_ROOT, args.run_name)
+            if args.run_name
+            else args.input or newest_run_output(PROJECT_ROOT)
+        )
+        if not input_path.exists():
+            raise FileNotFoundError(f"Results file not found: {input_path}")
+        output = args.output or input_path.parent / f"{input_path.stem}_scored.csv"
+        figures_dir = output.parent / "figures"
+        existing_performance_figures = list(figures_dir.glob("0[3-9]_*.png")) + list(
+            figures_dir.glob("1[01]_*.png")
+        )
+        if not args.overwrite and (output.exists() or existing_performance_figures):
+            existing = [output] if output.exists() else []
+            existing.extend(existing_performance_figures)
+            raise FileExistsError(
+                "Refusing to overwrite existing scored artifacts: "
+                + ", ".join(str(path) for path in existing)
+                + ". Use --overwrite or select a different --output."
+            )
         scored = score(
-            pd.read_csv(args.input),
+            pd.read_csv(input_path),
             use_embeddings=not args.no_embeddings,
             use_llm_judge=args.llm_judge,
         )
         print_report(scored)
-        output = args.output or args.input.parent / f"{args.input.stem}_scored.csv"
         buffer = io.StringIO()
         scored.to_csv(buffer, index=False)
         atomic_write_text(output, buffer.getvalue())
         try:
-            plot_retriever_comparison(scored, output.parent / "retriever_comparison.png")
-            plot_per_question_delta(scored, output.parent / "per_question_delta.png")
+            generate_evaluation_figures(
+                scored,
+                figures_dir,
+            )
         except Exception as exc:
             print(f"Warning: visualization generation skipped: {exc}")
         print(f"\nScored results saved to {output}")
-    except (FileNotFoundError, RuntimeError, ValueError) as exc:
+    except (FileExistsError, FileNotFoundError, RuntimeError, ValueError) as exc:
         parser.exit(1, f"Error: {exc}\n")
 
 

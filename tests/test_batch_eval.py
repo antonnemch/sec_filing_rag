@@ -95,6 +95,20 @@ class BatchEvaluationTests(unittest.TestCase):
                 run_batch_eval(tickers=["TEST"], k=0, project_root=self.project_root)
         load.assert_not_called()
 
+    def test_fresh_run_refuses_to_overwrite_existing_artifact(self) -> None:
+        self.output.write_text("existing", encoding="utf-8")
+
+        with patch("src.LLM_response.batch_eval.load_eval_set") as load:
+            with self.assertRaisesRegex(FileExistsError, "Refusing to overwrite"):
+                run_batch_eval(
+                    tickers=["TEST"],
+                    retriever="bm25",
+                    project_root=self.project_root,
+                    output_csv=self.output,
+                )
+
+        load.assert_not_called()
+
     def test_truncated_final_checkpoint_line_is_removed(self) -> None:
         checkpoint = self.project_root / "checkpoint.jsonl"
         valid = _checkpoint_record("TEST_1", "ok")

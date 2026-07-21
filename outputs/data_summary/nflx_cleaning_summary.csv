@@ -1,4 +1,4 @@
 ticker,filing_type,filing_date,accession_number,raw_length,cleaned_length,retained_ratio,warnings
-NFLX,10-K,2026-01-23,0001065280-26-000034,2137739,275297,0.1288,large_length_reduction; html_tables_flattened_to_text
-NFLX,10-Q,2026-04-17,0001065280-26-000138,1231266,97574,0.0792,large_length_reduction; html_tables_flattened_to_text
+NFLX,10-K,2026-01-23,0001065280-26-000034,2137739,275099,0.1287,large_length_reduction; html_tables_flattened_to_text
+NFLX,10-Q,2026-04-17,0001065280-26-000138,1231266,97395,0.0791,large_length_reduction; html_tables_flattened_to_text
 NFLX,8-K,2026-06-05,0001065280-26-000189,61217,6024,0.0984,large_length_reduction; html_tables_flattened_to_text

@@ -7,7 +7,7 @@
     "NFLX",
     "GOOG"
   ],
-  "generated_at_utc": "2026-07-14T23:47:02.939489+00:00",
+  "generated_at_utc": "2026-07-20T22:28:00.619838+00:00",
   "filings_downloaded": 15,
   "filing_type_counts": {
     "10-K": 5,
@@ -42,7 +42,8 @@
   "ticker_summaries": [
     {
       "ticker": "META",
-      "generated_at_utc": "2026-07-14T23:46:46.298791+00:00",
+      "generated_at_utc": "2026-07-20T22:27:41.122567+00:00",
+      "filings_as_of": "2026-07-14",
       "filings_downloaded": 3,
       "filing_type_counts": {
         "10-K": 1,
@@ -75,6 +76,7 @@
       "average_words_per_chunk": 381.69,
       "chunk_size": 400,
       "chunk_overlap": 75,
+      "chunks_sha256": "276334812164d182952b4a8174cb6dbc1c38af8afe4a7f25bfc25995137ad338",
       "output_paths": {
         "raw_manifest": "data/raw/meta/filing_metadata.json",
         "human_readable_dir": "data/human_readable/meta",
@@ -88,7 +90,8 @@
     },
     {
       "ticker": "AMZN",
-      "generated_at_utc": "2026-07-14T23:46:50.406099+00:00",
+      "generated_at_utc": "2026-07-20T22:27:45.286921+00:00",
+      "filings_as_of": "2026-07-14",
       "filings_downloaded": 3,
       "filing_type_counts": {
         "10-K": 1,
@@ -121,6 +124,7 @@
       "average_words_per_chunk": 366.93,
       "chunk_size": 400,
       "chunk_overlap": 75,
+      "chunks_sha256": "ddc70136ccf4f5b34b2781397ecbc708740bdb3cd2d5982b8e757c7b99aa2da7",
       "output_paths": {
         "raw_manifest": "data/raw/amzn/filing_metadata.json",
         "human_readable_dir": "data/human_readable/amzn",
@@ -134,7 +138,8 @@
     },
     {
       "ticker": "AAPL",
-      "generated_at_utc": "2026-07-14T23:46:53.554994+00:00",
+      "generated_at_utc": "2026-07-20T22:27:49.194471+00:00",
+      "filings_as_of": "2026-07-14",
       "filings_downloaded": 3,
       "filing_type_counts": {
         "10-K": 1,
@@ -167,6 +172,7 @@
       "average_words_per_chunk": 336.26,
       "chunk_size": 400,
       "chunk_overlap": 75,
+      "chunks_sha256": "2837bffd151aced50669b50e0dab622d7202b87661d3776f23b821d0a9ff4a0e",
       "output_paths": {
         "raw_manifest": "data/raw/aapl/filing_metadata.json",
         "human_readable_dir": "data/human_readable/aapl",
@@ -180,7 +186,8 @@
     },
     {
       "ticker": "NFLX",
-      "generated_at_utc": "2026-07-14T23:46:57.632344+00:00",
+      "generated_at_utc": "2026-07-20T22:27:54.631012+00:00",
+      "filings_as_of": "2026-07-14",
       "filings_downloaded": 3,
       "filing_type_counts": {
         "10-K": 1,
@@ -213,6 +220,7 @@
       "average_words_per_chunk": 356.06,
       "chunk_size": 400,
       "chunk_overlap": 75,
+      "chunks_sha256": "625764dcbedf4117164692a4a1db61d94b3e0c1c01891ae230d968b5ecb063f5",
       "output_paths": {
         "raw_manifest": "data/raw/nflx/filing_metadata.json",
         "human_readable_dir": "data/human_readable/nflx",
@@ -226,7 +234,8 @@
     },
     {
       "ticker": "GOOG",
-      "generated_at_utc": "2026-07-14T23:47:02.698848+00:00",
+      "generated_at_utc": "2026-07-20T22:28:00.362023+00:00",
+      "filings_as_of": "2026-07-14",
       "filings_downloaded": 3,
       "filing_type_counts": {
         "10-K": 1,
@@ -259,6 +268,7 @@
       "average_words_per_chunk": 367.38,
       "chunk_size": 400,
       "chunk_overlap": 75,
+      "chunks_sha256": "e5ba80bfeef0cade9e660916ecd0a04fd958b0d1af8f51d01497aac2da8084eb",
       "output_paths": {
         "raw_manifest": "data/raw/goog/filing_metadata.json",
         "human_readable_dir": "data/human_readable/goog",

@@ -1,6 +1,6 @@
 {
   "ticker": "NFLX",
-  "generated_at_utc": "2026-07-20T21:26:01.990757+00:00",
+  "generated_at_utc": "2026-07-21T03:29:18.724264+00:00",
   "filings_as_of": "2026-07-14",
   "filings_downloaded": 3,
   "filing_type_counts": {
@@ -31,10 +31,10 @@
   "cleaned_files": 3,
   "human_readable_files": 3,
   "total_chunks": 194,
-  "average_words_per_chunk": 356.06,
+  "average_words_per_chunk": 356.12,
   "chunk_size": 400,
   "chunk_overlap": 75,
-  "chunks_sha256": "625764dcbedf4117164692a4a1db61d94b3e0c1c01891ae230d968b5ecb063f5",
+  "chunks_sha256": "9fba240e1c433fa5f5e154fc3d0c4044735d93e15e2fa76af24e18a38c8d2086",
   "output_paths": {
     "raw_manifest": "data/raw/nflx/filing_metadata.json",
     "human_readable_dir": "data/human_readable/nflx",

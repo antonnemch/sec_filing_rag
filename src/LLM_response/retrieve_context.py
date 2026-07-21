@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from src.config import DEFAULT_RETRIEVAL_K
@@ -13,6 +14,29 @@ from src.ingest_data.embeddings import (
     search_embeddings,
 )
 from src.ingest_data.index_common import IndexValidationError
+
+
+_FILING_TYPE_PATTERN = re.compile(
+    r"\b(?:10\s*[-\u2013\u2014]?\s*[kq]|8\s*[-\u2013\u2014]?\s*k)\b",
+    re.IGNORECASE,
+)
+_COMPARISON_PATTERN = re.compile(
+    r"\b(?:compar(?:e|ed|ing|ison)|versus|vs\.?|relative\s+to)\b",
+    re.IGNORECASE,
+)
+
+
+def infer_filing_constraints(question: str) -> tuple[tuple[str, ...], bool]:
+    """Infer explicit SEC form filters and whether every named form is required."""
+
+    normalized: list[str] = []
+    for match in _FILING_TYPE_PATTERN.finditer(question):
+        compact = re.sub(r"[\s\u2013\u2014-]+", "", match.group(0)).upper()
+        filing_type = {"10K": "10-K", "10Q": "10-Q", "8K": "8-K"}[compact]
+        if filing_type not in normalized:
+            normalized.append(filing_type)
+    require_each = len(normalized) > 1 and bool(_COMPARISON_PATTERN.search(question))
+    return tuple(normalized), require_each
 
 
 def retrieve_chunks(
@@ -29,6 +53,7 @@ def retrieve_chunks(
         retriever: "faiss" (dense, OpenAI embeddings) or "bm25" (sparse, keyword).
         build_if_missing: automatically build the index if not found on disk.
     """
+    filing_types, require_each_filing_type = infer_filing_constraints(question)
     if retriever == "faiss":
         try:
             index, chunks = load_embeddings_index(ticker, project_root)
@@ -37,7 +62,14 @@ def retrieve_chunks(
                 raise
             build_embeddings_index(ticker, project_root)
             index, chunks = load_embeddings_index(ticker, project_root)
-        return search_embeddings(question, index, chunks, k=k)
+        return search_embeddings(
+            question,
+            index,
+            chunks,
+            k=k,
+            filing_types=filing_types,
+            require_each_filing_type=require_each_filing_type,
+        )
 
     if retriever == "bm25":
         try:
@@ -47,6 +79,13 @@ def retrieve_chunks(
                 raise
             build_bm25_index(ticker, project_root)
             index, chunks = load_bm25_index(ticker, project_root)
-        return search_bm25(question, index, chunks, k=k)
+        return search_bm25(
+            question,
+            index,
+            chunks,
+            k=k,
+            filing_types=filing_types,
+            require_each_filing_type=require_each_filing_type,
+        )
 
     raise ValueError(f"Unknown retriever {retriever!r}. Choose 'faiss' or 'bm25'.")

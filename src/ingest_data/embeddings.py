@@ -17,6 +17,7 @@ from src.config import (
     DEFAULT_EMBEDDING_BATCH_SIZE,
     DEFAULT_EMBEDDING_MODEL,
     DEFAULT_RETRIEVAL_K,
+    DENSE_DOCUMENT_FORMAT_VERSION,
 )
 from src.data.utils import PROJECT_ROOT, load_project_env
 from src.ingest_data.index_common import (
@@ -27,11 +28,34 @@ from src.ingest_data.index_common import (
     load_chunk_rows,
     load_validated_index_metadata,
     prune_legacy_index_files,
+    select_ranked_indices,
     write_shared_chunks,
 )
 
 
 _INDEX_FILE = "embeddings.faiss"
+
+
+def _metadata_value(value: object) -> str:
+    if value is None:
+        return ""
+    text = str(value).strip()
+    return "" if text.lower() == "nan" else text
+
+
+def format_chunk_for_embedding(chunk: dict[str, Any]) -> str:
+    """Combine filing structure with content for dense document embeddings."""
+
+    metadata = [
+        ("Company", _metadata_value(chunk.get("company"))),
+        ("Ticker", _metadata_value(chunk.get("ticker"))),
+        ("Filing type", _metadata_value(chunk.get("filing_type"))),
+        ("Filing date", _metadata_value(chunk.get("filing_date"))),
+        ("Section", _metadata_value(chunk.get("section_heading"))),
+    ]
+    lines = [f"{label}: {value}" for label, value in metadata if value]
+    lines.extend(("Content:", _metadata_value(chunk.get("text"))))
+    return "\n".join(lines)
 
 
 def _client() -> OpenAI:
@@ -63,7 +87,7 @@ def build_embeddings_index(
     """Embed all chunks and atomically save a validated FAISS index."""
 
     chunks, source_fingerprint = load_chunk_rows(ticker, project_root)
-    texts = [str(chunk["text"]) for chunk in chunks]
+    texts = [format_chunk_for_embedding(chunk) for chunk in chunks]
     print(f"Building embeddings index for {ticker} ({len(texts)} chunks)...")
     vectors = np.asarray(
         _embed_texts(texts, model=model, batch_size=batch_size), dtype="float32"
@@ -98,6 +122,7 @@ def build_embeddings_index(
         project_root,
         embedding_model=model,
         vector_dimension=int(vectors.shape[1]),
+        document_format_version=DENSE_DOCUMENT_FORMAT_VERSION,
     )
     prune_legacy_index_files(ticker, project_root)
     print(f"  Saved {_INDEX_FILE}, shared chunks, and manifest to {out_dir}")
@@ -123,6 +148,7 @@ def load_embeddings_index(
         project_root,
         embedding_model=model,
         vector_dimension=int(index.d),
+        document_format_version=DENSE_DOCUMENT_FORMAT_VERSION,
     )
     if index.ntotal != len(chunks):
         raise IndexValidationError(f"FAISS vector count does not match chunks for {ticker}.")
@@ -135,6 +161,8 @@ def search_embeddings(
     chunks: list[dict],
     model: str = DEFAULT_EMBEDDING_MODEL,
     k: int = DEFAULT_RETRIEVAL_K,
+    filing_types: tuple[str, ...] = (),
+    require_each_filing_type: bool = False,
 ) -> list[dict]:
     if k < 1:
         raise ValueError("k must be at least 1.")
@@ -143,12 +171,23 @@ def search_embeddings(
     if q_vec.shape[1] != index.d:
         raise RuntimeError("Query embedding dimension does not match the FAISS index.")
     faiss.normalize_L2(q_vec)
-    scores, indices = index.search(q_vec, min(k, len(chunks)))
+    search_count = len(chunks) if filing_types else min(k, len(chunks))
+    scores, indices = index.search(q_vec, search_count)
+    score_by_index = {
+        int(index_position): float(score)
+        for score, index_position in zip(scores[0], indices[0])
+        if index_position >= 0
+    }
+    top_indices = select_ranked_indices(
+        [int(index_position) for index_position in indices[0] if index_position >= 0],
+        chunks,
+        min(k, len(chunks)),
+        filing_types,
+        require_each_filing_type,
+    )
     results: list[dict] = []
-    for score, index_position in zip(scores[0], indices[0]):
-        if index_position < 0:
-            continue
+    for index_position in top_indices:
         chunk = dict(chunks[index_position])
-        chunk["retrieval_score"] = float(score)
+        chunk["retrieval_score"] = score_by_index[index_position]
         results.append(chunk)
     return results

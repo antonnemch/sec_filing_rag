@@ -16,6 +16,7 @@ from src.config import (
     DEFAULT_RETRIEVAL_K,
     DEFAULT_TICKERS,
     EVALUATION_SCHEMA_VERSION,
+    RETRIEVAL_POLICY_VERSION,
 )
 from src.data.utils import (
     PROJECT_ROOT,
@@ -37,6 +38,7 @@ from src.LLM_response.ground_truth import (
 )
 from src.LLM_response.LLM import SYSTEM_PROMPT, answer_question
 from src.LLM_response.retrieve_context import retrieve_chunks
+from src.evaluation.run_artifacts import new_run_name, output_for_run
 
 
 RESULT_COLUMNS = [
@@ -112,6 +114,7 @@ def _build_run_manifest(
         "tickers": list(tickers),
         "retrievers": list(retrievers),
         "retrieval_k": k,
+        "retrieval_policy_version": RETRIEVAL_POLICY_VERSION,
         "llm_model": llm_model,
         "include_incomplete": include_incomplete,
         "eval_csv": str(eval_path.resolve()),
@@ -313,8 +316,20 @@ def run_batch_eval(
     retrievers = ("faiss", "bm25") if retriever == "both" else (retriever,)
     eval_path = (eval_csv or DEFAULT_EVAL_CSV).resolve()
     output_csv = output_csv or (
-        project_root / "outputs" / "eval_results" / "eval_results.csv"
+        output_for_run(project_root, new_run_name())
     )
+    checkpoint_path = _checkpoint_path(output_csv)
+    manifest_path = _manifest_path(output_csv)
+    if not resume:
+        existing = [
+            path for path in (output_csv, checkpoint_path, manifest_path) if path.exists()
+        ]
+        if existing:
+            joined = ", ".join(str(path) for path in existing)
+            raise FileExistsError(
+                "Refusing to overwrite an existing evaluation run artifact: "
+                f"{joined}. Use --resume for this exact run or choose a new run name/output."
+            )
     output_csv.parent.mkdir(parents=True, exist_ok=True)
 
     eval_df = load_eval_set(eval_path)
@@ -349,8 +364,6 @@ def run_batch_eval(
         include_incomplete,
         project_root,
     )
-    checkpoint_path = _checkpoint_path(output_csv)
-    manifest_path = _manifest_path(output_csv)
     if resume:
         if not manifest_path.exists() or not checkpoint_path.exists():
             raise FileNotFoundError(
@@ -364,8 +377,6 @@ def run_batch_eval(
             )
         records = _read_checkpoint(checkpoint_path)
     else:
-        if checkpoint_path.exists():
-            checkpoint_path.unlink()
         write_json(manifest_path, manifest)
         records = {}
 
